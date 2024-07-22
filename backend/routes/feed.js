@@ -4,7 +4,7 @@ const router = express.Router();
 const feedControllers = require("../controllers/feed");
 
 router.get("/posts", feedControllers.getPosts);
-router.get("/post/postId", feedControllers.getPost);
+router.get("/post/:postId", feedControllers.getPost);
 router.post(
   "/post",
   [
@@ -13,5 +13,14 @@ router.post(
   ],
   feedControllers.createPost
 );
+router.put(
+  "/post/:postId",
+  [
+    body("title", "Invalid Title").trim().isLength({ min: 3 }),
+    body("content", "Invalid Content").trim().isLength({ min: 3 }),
+  ],
+  feedControllers.updatePost
+);
+router.delete("/post/:postId", feedControllers.deletePost);
 
 module.exports = router;

@@ -70,3 +70,58 @@ exports.createPost = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.updatePost = async (req, res, next) => {
+  try {
+    if (!req.isAuth) {
+      errTemplate("Not Authenticated", 401);
+    }
+    const user = await User.findById(req.userId);
+    const postId = req.params.postId;
+    const post = await Post.findById(postId);
+    if (!user || !post) {
+      errTemplate("User or Post not found!", 404);
+    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      errTemplate("Validation failed", 422, errors.array());
+    }
+    const title = req.body.title || post.title;
+    const content = req.body.content || post.content;
+    post.title = title;
+    post.content = content;
+    const updatedPost = await post.save();
+    res.status(200).json({ message: "Success updated post" });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.deletePost = async (req, res, next) => {
+  try {
+    if (!req.isAuth) {
+      errTemplate("Not Authenticated", 401);
+    }
+    const postId = req.params.postId;
+    const user = await User.findById(req.userId);
+    const post = await Post.findById(postId);
+    if (!post || !user) {
+      errTemplate("Post or User not found", 404);
+    }
+    if (post.creator.toString() !== user._id.toString()) {
+      errTemplate("Access Denied", 403);
+    }
+    await Post.findByIdAndDelete(postId);
+    user.posts.pull(postId);
+    await user.save();
+    res.status(200).json({ message: "Success deleted post" });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
