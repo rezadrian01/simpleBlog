@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user.js");
+const { errTemplate } = require("../utils/error.js");
 
 const { validationResult } = require("express-validator");
 
@@ -20,12 +21,10 @@ exports.postSignup = async (req, res, next) => {
       username,
     });
     const createdUser = await user.save();
-    res
-      .status(201)
-      .json({
-        message: "Success creating account!",
-        userId: createdUser._id.toString(),
-      });
+    res.status(201).json({
+      message: "Success creating account!",
+      userId: createdUser._id.toString(),
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -34,13 +33,34 @@ exports.postSignup = async (req, res, next) => {
   }
 };
 
-const errTemplate = (
-  msg = "An error occured!",
-  statusCode = 500,
-  data = []
-) => {
-  const err = new Error(msg);
-  err.statusCode = statusCode;
-  err.data = data;
-  throw err;
+exports.postLogin = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      errTemplate("Validation failed!", req.statusCode || 422, errors.array());
+    }
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = await User.findOne({ email });
+    const isEqual = await bcrypt.compare(password, user.password);
+    if (!isEqual) {
+      errTemplate("Wrong password", 401);
+    }
+    const token = jwt.sign(
+      {
+        email: user.email,
+        userId: user._id.toString(),
+      },
+      "somesupersecretsecret",
+      { expiresIn: "5hr" }
+    );
+    res
+      .status(200)
+      .json({ message: "Login success", token, userId: user._id.toString() });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
