@@ -74,7 +74,7 @@ export default function EditPost({ postId, onCancel, onAfterEdit }) {
     fetchingPost();
   }, []);
   return (
-    <section className="w-full sm:w-3/4 md:w-1/2 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-4">
+    <section className="w-5/6 sm:w-3/4 md:w-1/2 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-4">
       {data.error && <p>{data.post.error}</p>}
       {data.post && (
         <>
@@ -110,7 +110,7 @@ export default function EditPost({ postId, onCancel, onAfterEdit }) {
               onClick={handleSubmitEdit}
               className="bg-slate-800 px-4 py-2 rounded hover:bg-slate-700"
             >
-              Post
+              Update
             </button>
             <button onClick={onCancel}>Cancel</button>
           </div>

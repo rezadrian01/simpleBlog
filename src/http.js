@@ -1,5 +1,7 @@
+const host = "https://l09p9sgr-8080.asse.devtunnels.ms";
+
 export async function fetchPosts() {
-  const response = await fetch("http://localhost:8080/feed/posts");
+  const response = await fetch(`${host}/feed/posts`);
   if (!response.ok) {
     throw new Error("Failed to fetch post.");
   }
@@ -7,7 +9,7 @@ export async function fetchPosts() {
   return resData;
 }
 export async function fetchPost(postId) {
-  const response = await fetch(`http://localhost:8080/feed/post/${postId}`);
+  const response = await fetch(`${host}/feed/post/${postId}`);
   const resData = await response.json();
   if (!response.ok) {
     throw new Error("Failed to fetch post");
@@ -16,7 +18,7 @@ export async function fetchPost(postId) {
 }
 export async function getUserPost() {
   const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:8080/feed/user-post", {
+  const response = await fetch(`${host}/feed/user-post`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -32,7 +34,7 @@ export async function getUserPost() {
 
 export async function createPost(post) {
   const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:8080/feed/post", {
+  const response = await fetch(`${host}/feed/post`, {
     method: "POST",
     body: JSON.stringify({ ...post }),
     headers: {
@@ -49,7 +51,7 @@ export async function createPost(post) {
 
 export async function updatePost(postId, postData) {
   const token = localStorage.getItem("token");
-  const response = await fetch(`http://localhost:8080/feed/post/${postId}`, {
+  const response = await fetch(`${host}/feed/post/${postId}`, {
     method: "PUT",
     body: JSON.stringify({ ...postData }),
     headers: {
@@ -66,7 +68,7 @@ export async function updatePost(postId, postData) {
 
 export async function deletePost(postId) {
   const token = localStorage.getItem("token");
-  const response = await fetch(`http://localhost:8080/feed/post/${postId}`, {
+  const response = await fetch(`${host}/feed/post/${postId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -82,7 +84,7 @@ export async function deletePost(postId) {
 
 //auth
 export async function login(userData) {
-  const response = await fetch("http://localhost:8080/auth/login", {
+  const response = await fetch(`${host}/auth/login`, {
     method: "POST",
     body: JSON.stringify({ ...userData }),
     headers: {
@@ -96,7 +98,7 @@ export async function login(userData) {
   return resData;
 }
 export async function signup(userData) {
-  const response = await fetch("http://localhost:8080/auth/signup", {
+  const response = await fetch(`${host}/auth/signup`, {
     method: "POST",
     body: JSON.stringify({ ...userData }),
     headers: {

@@ -1,8 +1,14 @@
-# React + Vite
+# MERN Stack Blog Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple blog application built using the MERN stack (MongoDB, Express, React, Node.js). This application allows users to create posts, comment on posts, register and login, and more. Future features include photo uploads, user search, profile management, and more.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Create Posts:** Users can create posts consisting of text content.
+- **Comment on Posts:** Users can comment on posts.
+- **User Registration and Login:** Users can register and login to the application.
+- **User Search:** Search for other users in the application. (Upcoming)
+- **User Profile:** View and edit user profiles. (Upcoming)
+- **Context API Migration:** Manage state using React's Context API. (Upcoming)
+- **Like and Comments:** Users can like and comments on post. (Upcoming)
+- **Select Post:** Users can select specific posts. (Upcoming)

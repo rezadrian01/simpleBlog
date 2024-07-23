@@ -87,7 +87,7 @@ export default function MyPost({ onEditing }) {
           })}
         </ol>
       )}
-      {!data.error && data.userPosts?.length === 0 && (
+      {!data.error && !data.isFetching && data.userPosts?.length === 0 && (
         <p className="text-center">You dont have any post yet.</p>
       )}
     </section>
