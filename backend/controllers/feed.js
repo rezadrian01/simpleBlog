@@ -3,14 +3,15 @@ const User = require("../models/user");
 const { errTemplate } = require("../utils/error");
 const { validationResult } = require("express-validator");
 
-const perPage = 5;
+const perPage = 20;
 exports.getPosts = async (req, res, next) => {
   try {
     const page = +req.params.page || 1;
     const totalPosts = await Post.find().countDocuments();
     const posts = await Post.find()
       .skip((page - 1) * perPage)
-      .limit(perPage);
+      .limit(perPage)
+      .populate("creator");
     res.status(200).json({ message: "Success get a posts", totalPosts, posts });
   } catch (err) {
     if (!err.statusCode) {
@@ -23,11 +24,27 @@ exports.getPosts = async (req, res, next) => {
 exports.getPost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("creator");
     if (!post) {
       errTemplate("Post not found", 404);
     }
     res.status(200).json({ message: "Success get a post", post });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.getPostByUserId = async (req, res, next) => {
+  try {
+    const userId = req.body.userId;
+    const totalPosts = await Post.find({
+      creator: userId.toString(),
+    }).countDocuments();
+    const posts = await Post.find({ creator: userId.toString() });
+    res.status(200).json({ message: "Success get posts", posts, totalPosts });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
