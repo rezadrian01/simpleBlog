@@ -6,10 +6,12 @@ import NewPost from "./components/NewPost";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
 import MyPost from "./components/MyPost";
+import EditPost from "./components/EditPost";
 
 function App() {
   const [data, setData] = useState({
     selectedMenu: "posts",
+    selectedPostId: null,
     isLoggedIn: false,
   });
   useEffect(() => {
@@ -72,6 +74,24 @@ function App() {
       };
     });
   }
+  function handleSelectPost(postId) {
+    setData((prevData) => {
+      return {
+        ...prevData,
+        selectedMenu: "select post",
+        selectedPostId: postId,
+      };
+    });
+  }
+  function handleEditPost(postId) {
+    setData((prevData) => {
+      return {
+        ...prevData,
+        selectedMenu: "edit post",
+        selectedPostId: postId,
+      };
+    });
+  }
   //auth
   function handleLogout() {
     localStorage.removeItem("token");
@@ -101,7 +121,9 @@ function App() {
   } else if (data.selectedMenu === "signup") {
     content = <Signup onLoginClick={handleSignin} afterSubmit={handleSignin} />;
   } else if (data.selectedMenu === "myPost") {
-    content = <MyPost />;
+    content = <MyPost onEditing={handleEditPost} />;
+  } else if (data.selectedMenu === "edit post") {
+    content = <EditPost postId={data.selectedPostId} />;
   }
 
   return (

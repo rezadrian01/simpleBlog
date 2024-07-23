@@ -6,6 +6,14 @@ export async function fetchPosts() {
   const resData = response.json();
   return resData;
 }
+export async function fetchPost(postId) {
+  const response = await fetch(`http://localhost:8080/feed/post/${postId}`);
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error("Failed to fetch post");
+  }
+  return resData.post;
+}
 export async function createPost(post) {
   const token = localStorage.getItem("token");
   const response = await fetch("http://localhost:8080/feed/post", {

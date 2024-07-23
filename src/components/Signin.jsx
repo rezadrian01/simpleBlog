@@ -34,7 +34,7 @@ export default function Signin({ afterSubmit, onSignupClick }) {
     }
   }
   return (
-    <section className="w-full sm:w-3/4 md:w-1/2 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-12">
+    <section className="w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/4 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-12">
       <h3 className="text-2xl font-semibold ">Sign In</h3>
       <div className="relative">
         <input

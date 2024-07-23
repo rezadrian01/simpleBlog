@@ -42,7 +42,6 @@ exports.postPostByUserId = async (req, res, next) => {
     if (!req.isAuth) {
       errTemplate("Not Authenticated", 403);
     }
-    console.log(req.userId);
     const userId = req.userId;
     const totalPosts = await Post.find({
       creator: userId.toString(),

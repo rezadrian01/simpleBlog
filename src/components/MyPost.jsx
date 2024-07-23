@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getUserPost } from "../http";
 import PostCard from "./PostCard";
 
-export default function MyPost() {
+export default function MyPost({ onEditing }) {
   const [data, setData] = useState({
     userPosts: [],
     totalPost: 0,
@@ -53,7 +53,14 @@ export default function MyPost() {
       {!data.error && data.userPosts?.length > 0 && (
         <ol className="flex flex-col gap-4">
           {data.userPosts?.map((post) => {
-            return <PostCard key={post._id.toString()} post={post} />;
+            return (
+              <PostCard
+                key={post._id.toString()}
+                post={post}
+                isMyPost={true}
+                onEditing={onEditing}
+              />
+            );
           })}
         </ol>
       )}
