@@ -5,6 +5,7 @@ import Nav from "./components/Nav";
 import NewPost from "./components/NewPost";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
+import MyPost from "./components/MyPost";
 
 function App() {
   const [data, setData] = useState({
@@ -15,6 +16,14 @@ function App() {
     tokenCheck();
   }, []);
   function handleAddPost() {
+    if (!data.isLoggedIn) {
+      return setData((prevData) => {
+        return {
+          ...prevData,
+          selectedMenu: "signin",
+        };
+      });
+    }
     setData((prevData) => {
       return {
         ...prevData,
@@ -47,6 +56,23 @@ function App() {
     });
     tokenCheck();
   }
+  function handleShowMyPost() {
+    if (!data.isLoggedIn) {
+      return setData((prevData) => {
+        return {
+          ...prevData,
+          selectedMenu: "signin",
+        };
+      });
+    }
+    setData((prevData) => {
+      return {
+        ...prevData,
+        selectedMenu: "myPost",
+      };
+    });
+  }
+  //auth
   function handleLogout() {
     localStorage.removeItem("token");
     tokenCheck();
@@ -56,10 +82,13 @@ function App() {
     setData((prevData) => {
       return {
         ...prevData,
+        selectedMenu: "posts",
         isLoggedIn: token,
       };
     });
   }
+
+  //content
   let content = <Posts />;
   if (data.selectedMenu === "newPost") {
     content = (
@@ -71,7 +100,10 @@ function App() {
     );
   } else if (data.selectedMenu === "signup") {
     content = <Signup onLoginClick={handleSignin} afterSubmit={handleSignin} />;
+  } else if (data.selectedMenu === "myPost") {
+    content = <MyPost />;
   }
+
   return (
     <div className="bg-slate-800 text-slate-300 min-h-screen pb-20">
       <header>
@@ -80,6 +112,8 @@ function App() {
           onAddPost={handleAddPost}
           onSignin={handleSignin}
           onLogout={handleLogout}
+          onMyPost={handleShowMyPost}
+          onResetMenu={handleResetMenu}
         />
       </header>
       {content}

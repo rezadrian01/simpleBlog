@@ -54,10 +54,10 @@ export async function signup(userData) {
 export async function getUserPost() {
   const token = localStorage.getItem("token");
   const response = await fetch("http://localhost:8080/feed/user-post", {
-    method: "GET",
-    body: JSON.stringify({ userId: token }),
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `bearer ${token}`,
     },
   });
   if (!response.ok) {

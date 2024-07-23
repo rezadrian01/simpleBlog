@@ -37,13 +37,19 @@ exports.getPost = async (req, res, next) => {
   }
 };
 
-exports.getPostByUserId = async (req, res, next) => {
+exports.postPostByUserId = async (req, res, next) => {
   try {
-    const userId = req.body.userId;
+    if (!req.isAuth) {
+      errTemplate("Not Authenticated", 403);
+    }
+    console.log(req.userId);
+    const userId = req.userId;
     const totalPosts = await Post.find({
       creator: userId.toString(),
     }).countDocuments();
-    const posts = await Post.find({ creator: userId.toString() });
+    const posts = await Post.find({ creator: userId.toString() }).populate(
+      "creator"
+    );
     res.status(200).json({ message: "Success get posts", posts, totalPosts });
   } catch (err) {
     if (!err.statusCode) {
@@ -102,6 +108,9 @@ exports.updatePost = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       errTemplate("Validation failed", 422, errors.array());
+    }
+    if (post.creator.toString() !== user._id.toString()) {
+      errTemplate("Access Denied", 403);
     }
     const title = req.body.title || post.title;
     const content = req.body.content || post.content;

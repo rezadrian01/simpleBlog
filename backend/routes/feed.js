@@ -5,7 +5,7 @@ const feedControllers = require("../controllers/feed");
 
 router.get("/posts", feedControllers.getPosts);
 router.get("/post/:postId", feedControllers.getPost);
-router.get("/user-post", feedControllers.getPostByUserId);
+router.post("/user-post", feedControllers.postPostByUserId);
 router.post(
   "/post",
   [
