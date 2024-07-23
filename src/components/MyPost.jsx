@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserPost } from "../http";
+import { deletePost, getUserPost } from "../http";
 import PostCard from "./PostCard";
 
 export default function MyPost({ onEditing }) {
@@ -9,6 +9,28 @@ export default function MyPost({ onEditing }) {
     error: false,
     isFetching: false,
   });
+  async function handleDeletePost(postId) {
+    try {
+      const resData = await deletePost(postId);
+      console.log(resData);
+    } catch (err) {
+      setData((prevData) => {
+        return {
+          ...prevData,
+          error: err.message || "Failed to delete post.",
+        };
+      });
+      console.log(err);
+    }
+    setData((prevData) => {
+      return {
+        ...prevData,
+        userPosts: [
+          ...prevData.userPosts.filter((post) => post._id !== postId),
+        ],
+      };
+    });
+  }
   useEffect(() => {
     async function fetchingUserPost() {
       setData((prevData) => {
@@ -59,6 +81,7 @@ export default function MyPost({ onEditing }) {
                 post={post}
                 isMyPost={true}
                 onEditing={onEditing}
+                onDelete={handleDeletePost}
               />
             );
           })}

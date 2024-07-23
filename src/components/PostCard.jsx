@@ -1,4 +1,4 @@
-export default function PostCard({ post, isMyPost, onEditing }) {
+export default function PostCard({ post, isMyPost, onEditing, onDelete }) {
   const date = new Date(post.createdAt);
   const formatedDate = date.toLocaleDateString("id-ID", {
     year: "numeric",
@@ -23,7 +23,9 @@ export default function PostCard({ post, isMyPost, onEditing }) {
               <button onClick={() => onEditing(post._id.toString())}>
                 Edit
               </button>
-              <button>Delete</button>
+              <button onClick={() => onDelete(post._id.toString())}>
+                Delete
+              </button>
             </div>
           )}
         </div>

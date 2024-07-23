@@ -14,6 +14,22 @@ export async function fetchPost(postId) {
   }
   return resData.post;
 }
+export async function getUserPost() {
+  const token = localStorage.getItem("token");
+  const response = await fetch("http://localhost:8080/feed/user-post", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch your post");
+  }
+  const resData = await response.json();
+  return resData;
+}
+
 export async function createPost(post) {
   const token = localStorage.getItem("token");
   const response = await fetch("http://localhost:8080/feed/post", {
@@ -30,6 +46,41 @@ export async function createPost(post) {
   const resData = await response.json();
   return resData;
 }
+
+export async function updatePost(postId, postData) {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`http://localhost:8080/feed/post/${postId}`, {
+    method: "PUT",
+    body: JSON.stringify({ ...postData }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `bearer ${token}`,
+    },
+  });
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error("Failed to update post");
+  }
+  return resData;
+}
+
+export async function deletePost(postId) {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`http://localhost:8080/feed/post/${postId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `bearer ${token}`,
+    },
+  });
+  const resData = await response.json();
+  if (!response.ok) {
+    throw new Error("Failed to delete post");
+  }
+  return resData;
+}
+
+//auth
 export async function login(userData) {
   const response = await fetch("http://localhost:8080/auth/login", {
     method: "POST",
@@ -57,20 +108,5 @@ export async function signup(userData) {
   if (!response.ok) {
     throw new Error("Failed to create account");
   }
-  return resData;
-}
-export async function getUserPost() {
-  const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:8080/feed/user-post", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `bearer ${token}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch your post");
-  }
-  const resData = await response.json();
   return resData;
 }

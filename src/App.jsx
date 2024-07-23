@@ -92,6 +92,15 @@ function App() {
       };
     });
   }
+  function handleBackToMyPost() {
+    setData((prevData) => {
+      return {
+        ...prevData,
+        selectedMenu: "myPost",
+        selectedPostId: null,
+      };
+    });
+  }
   //auth
   function handleLogout() {
     localStorage.removeItem("token");
@@ -123,7 +132,13 @@ function App() {
   } else if (data.selectedMenu === "myPost") {
     content = <MyPost onEditing={handleEditPost} />;
   } else if (data.selectedMenu === "edit post") {
-    content = <EditPost postId={data.selectedPostId} />;
+    content = (
+      <EditPost
+        postId={data.selectedPostId}
+        onCancel={handleBackToMyPost}
+        onAfterEdit={handleBackToMyPost}
+      />
+    );
   }
 
   return (

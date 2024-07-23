@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { fetchPost } from "../http";
+import { fetchPost, updatePost } from "../http";
 
-export default function EditPost({ postId, onCancel }) {
+export default function EditPost({ postId, onCancel, onAfterEdit }) {
   const [data, setData] = useState({
     post: {},
     isFetching: false,
@@ -24,6 +24,18 @@ export default function EditPost({ postId, onCancel }) {
         contentInput: event.target.value,
       };
     });
+  }
+  async function handleSubmitEdit() {
+    try {
+      const title = data.titleInput;
+      const content = data.contentInput;
+      const resData = await updatePost(postId, { title, content });
+      console.log(resData);
+      //back to mypost
+      onAfterEdit();
+    } catch (err) {
+      console.log(err);
+    }
   }
   useEffect(() => {
     async function fetchingPost() {
@@ -75,7 +87,7 @@ export default function EditPost({ postId, onCancel }) {
             </label>
             <input
               onChange={handleChangeTitle}
-              value={data.post.title}
+              value={data.titleInput}
               id="title"
               className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full"
               type="text"
@@ -87,7 +99,7 @@ export default function EditPost({ postId, onCancel }) {
             </label>
             <textarea
               onChange={handleChangeContent}
-              value={data.post.content}
+              value={data.contentInput}
               id="content"
               className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full"
               type="text"
@@ -95,7 +107,7 @@ export default function EditPost({ postId, onCancel }) {
           </div>
           <div className="flex gap-4 flex-row-reverse">
             <button
-              //   onClick={handlePost}
+              onClick={handleSubmitEdit}
               className="bg-slate-800 px-4 py-2 rounded hover:bg-slate-700"
             >
               Post
