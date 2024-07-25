@@ -16,6 +16,11 @@ export const PostContext = createContext({
     isLoading: false,
     totalPosts: 0,
   },
+  creatingPost: () => {},
+  fetchingPosts: () => {},
+  fetchingPost: () => {},
+  updatingPost: () => {},
+  deletingPost: () => {},
 });
 
 function postContextReducer(state, action) {
