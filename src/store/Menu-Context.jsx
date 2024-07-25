@@ -6,7 +6,7 @@ export const MenuContext = createContext({
     selectedPostId: null,
   },
   handleAddPostMenu: () => {},
-  handleAddPostMenu: () => {},
+  handleMyPostMenu: () => {},
   handleSelectPostMenu: (postId) => {},
   handleEditPostMenu: (postId) => {},
   handleResetMenu: () => {},
@@ -53,7 +53,7 @@ function menuContextReducer(state, action) {
     const { postId } = action.payload;
     return state((prevData) => ({
       ...prevData,
-      selectedMenu: "edit post",
+      selectedMenu: "editPost",
       selectedPostId: postId,
     }));
   }
@@ -95,7 +95,7 @@ export default function MenuContextProvider({ children }) {
       type: "ADD_POST_MENU",
     });
   }
-  function handleAddPostMenu() {
+  function handleMyPostMenu() {
     menuContextDispatch({
       type: "SHOW_MYPOST_MENU",
     });
@@ -136,7 +136,7 @@ export default function MenuContextProvider({ children }) {
   const ctxValue = {
     menuContextState,
     handleAddPostMenu,
-    handleAddPostMenu,
+    handleMyPostMenu,
     handleSelectPostMenu,
     handleEditPostMenu,
     handleResetMenu,

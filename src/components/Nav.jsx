@@ -1,24 +1,34 @@
-export default function Nav({
-  isLoggedIn,
-  onAddPost,
-  onSignin,
-  onLogout,
-  onMyPost,
-  onResetMenu,
-}) {
+import { useContext } from "react";
+
+import { UserContext } from "../store/User-Context";
+import { MenuContext } from "../store/Menu-Context";
+
+export default function Nav() {
+  //menu
+  const {
+    handleSigninMenu,
+    handleResetMenu,
+    handleAddPostMenu,
+    handleMyPostMenu,
+  } = useContext(MenuContext);
+
+  //user
+  const { userContextState, signoutFn } = useContext(UserContext);
+  const { isLoggedIn } = userContextState;
+
   return (
     <nav className="bg-slate-700 px-4 py-6 rounded mb-24">
       <ul className="flex justify-between">
         <li>
-          <button onClick={onResetMenu}>Blog Now</button>
+          <button onClick={handleResetMenu}>Blog Now</button>
         </li>
         <li className="flex gap-8">
-          <button onClick={onAddPost}>Create Post</button>
-          <button onClick={onMyPost}>My Posts</button>
+          <button onClick={handleAddPostMenu}>Create Post</button>
+          <button onClick={handleMyPostMenu}>My Posts</button>
         </li>
         <li className="flex gap-4">
-          {!isLoggedIn && <button onClick={onSignin}>Sign In</button>}
-          {isLoggedIn && <button onClick={onLogout}>Logout</button>}
+          {!isLoggedIn && <button onClick={handleSigninMenu}>Sign In</button>}
+          {isLoggedIn && <button onClick={signoutFn}>Logout</button>}
         </li>
       </ul>
     </nav>

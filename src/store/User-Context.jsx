@@ -9,8 +9,8 @@ export const UserContext = createContext({
     isLoading: false,
     hasError: false,
   },
-  signinFn: () => {},
-  signupFn: () => {},
+  signinFn: (userData) => {},
+  signupFn: (userData) => {},
   signoutFn: () => {},
 });
 

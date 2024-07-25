@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
+
+import MenuContextProvider, { MenuContext } from "./store/Menu-Context";
 
 import Posts from "./components/Posts";
 import Nav from "./components/Nav";
@@ -14,64 +16,34 @@ function App() {
   //   selectedPostId: null,
   //   isLoggedIn: false,
   // });
-  useEffect(() => {
-    tokenCheck();
-  }, []);
+  const { menuContextState } = useContext(MenuContext);
+  const { selectedMenu } = menuContextState;
 
-  //auth
-  function handleLogout() {
-    localStorage.removeItem("token");
-    tokenCheck();
-  }
-  function tokenCheck() {
-    const token = localStorage.getItem("token");
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "posts",
-        isLoggedIn: token,
-      };
-    });
-  }
-
-  //content
-  let content = <Posts />;
-  if (data.selectedMenu === "newPost") {
-    content = (
-      <NewPost onCancel={handleResetMenu} afterSubmit={handleResetMenu} />
-    );
-  } else if (data.selectedMenu === "signin") {
-    content = (
-      <Signin afterSubmit={handleResetMenu} onSignupClick={handleSignup} />
-    );
-  } else if (data.selectedMenu === "signup") {
-    content = <Signup onLoginClick={handleSignin} afterSubmit={handleSignin} />;
-  } else if (data.selectedMenu === "myPost") {
-    content = <MyPost onEditing={handleEditPost} />;
-  } else if (data.selectedMenu === "edit post") {
-    content = (
-      <EditPost
-        postId={data.selectedPostId}
-        onCancel={handleBackToMyPost}
-        onAfterEdit={handleBackToMyPost}
-      />
-    );
+  function MainContent() {
+    //content
+    if (selectedMenu === "newPost") {
+      return <NewPost />;
+    } else if (selectedMenu === "signin") {
+      return <Signin />;
+    } else if (selectedMenu === "signup") {
+      return <Signup />;
+    } else if (selectedMenu === "myPost") {
+      return <MyPost />;
+    } else if (selectedMenu === "editPost") {
+      return <EditPost />;
+    }
+    return <Posts />;
   }
 
   return (
-    <div className="bg-slate-800 text-slate-300 min-h-screen pb-20">
-      <header>
-        <Nav
-          isLoggedIn={data.isLoggedIn}
-          onAddPost={handleAddPost}
-          onSignin={handleSignin}
-          onLogout={handleLogout}
-          onMyPost={handleShowMyPost}
-          onResetMenu={handleResetMenu}
-        />
-      </header>
-      {content}
-    </div>
+    <MenuContextProvider>
+      <div className="bg-slate-800 text-slate-300 min-h-screen pb-20">
+        <header>
+          <Nav />
+        </header>
+        <MainContent />
+      </div>
+    </MenuContextProvider>
   );
 }
 
