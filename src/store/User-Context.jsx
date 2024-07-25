@@ -17,48 +17,48 @@ export const UserContext = createContext({
 function userContextReducer(state, action) {
   switch (action.type) {
     case "START_LOADING":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: true,
-      }));
+      };
 
     case "SUCCESS_LOGIN":
       //set token to localStorage
       localStorage.setItem("token", action.payload.token);
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: false,
         hasError: false,
         userId: action.payload.userId,
         isLoggedIn: true,
-      }));
+      };
     case "FAIL_LOGIN":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: false,
         hasError: "Failed to login",
-      }));
+      };
 
     case "SUCCESS_SIGNUP":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: false,
         hasError: false,
-      }));
+      };
     case "FAIL_SIGNUP":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: false,
         hasError: "Failed to signup",
-      }));
+      };
 
     case "SIGNOUT":
       localStorage.removeItem("token");
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoggedIn: false,
         userId: null,
-      }));
+      };
   }
   return state;
 }

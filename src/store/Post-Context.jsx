@@ -27,68 +27,64 @@ function postContextReducer(state, action) {
   let tempValue;
   switch (action.type) {
     case "STARTING_LOADING":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: true,
-      }));
+      };
 
     //create
     case "SUCCESS_CREATE_POST":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: false,
         hasError: false,
-      }));
+      };
     case "FAIL_CREATE_POST":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: false,
         hasError: "Failed to create post.",
-      }));
+      };
 
     //fetch
     case "SUCCESS_FETCH_POSTS":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         posts: [...action.payload.posts],
         totalPosts: action.payload.totalPosts,
         isLoading: false,
         hasError: false,
-      }));
+      };
     case "FAIL_FETCH_POSTS":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: false,
         hasError: "Failed to fetch posts",
-      }));
+      };
 
     case "SUCCESS_FETCH_POST":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         currentPost: action.payload.post,
         isLoading: false,
         hasError: false,
-      }));
+      };
 
     case "FAIL_FETCH_POST":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         hasError: "Failed to fetch post",
-      }));
+      };
 
     //update
     case "SUCCESS_UPDATE_POST":
-      return state((prevState) => ({
-        ...prevState,
-        isLoading: false,
-        hasError: false,
-      }));
+      return { ...state, isLoading: false, hasError: false };
     case "FAIL_UPDATE_POST":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         isLoading: false,
         hasError: "Failed to update post",
-      }));
+      };
 
     //delete
     case "START_DELETE_POST":
@@ -96,16 +92,16 @@ function postContextReducer(state, action) {
       const deletedPosts = state.posts.filter(
         (post) => post.id !== action.payload.postId
       );
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         posts: deletedPosts,
-      }));
+      };
     case "FAIL_DELETE_POST":
-      return state((prevState) => ({
-        ...prevState,
+      return {
+        ...state,
         posts: [...tempValue],
         hasError: "Failed to deleting post.",
-      }));
+      };
   }
   return state;
 }
