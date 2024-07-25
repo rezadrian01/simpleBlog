@@ -1,5 +1,7 @@
 import { useContext } from "react";
 
+import UserContextProvider from "./store/User-Context";
+import PostContextProvider from "./store/Post-Context";
 import MenuContextProvider, { MenuContext } from "./store/Menu-Context";
 
 import Posts from "./components/Posts";
@@ -18,7 +20,7 @@ function App() {
   // });
   const { menuContextState } = useContext(MenuContext);
   const { selectedMenu } = menuContextState;
-
+  console.log(selectedMenu);
   function MainContent() {
     //content
     if (selectedMenu === "newPost") {
@@ -36,14 +38,18 @@ function App() {
   }
 
   return (
-    <MenuContextProvider>
-      <div className="bg-slate-800 text-slate-300 min-h-screen pb-20">
-        <header>
-          <Nav />
-        </header>
-        <MainContent />
-      </div>
-    </MenuContextProvider>
+    <UserContextProvider>
+      <PostContextProvider>
+        <MenuContextProvider>
+          <div className="bg-slate-800 text-slate-300 min-h-screen pb-20">
+            <header>
+              <Nav />
+            </header>
+            <MainContent />
+          </div>
+        </MenuContextProvider>
+      </PostContextProvider>
+    </UserContextProvider>
   );
 }
 

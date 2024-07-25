@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
-import { createPost } from "../http";
+import { useEffect, useState, useContext } from "react";
+// import { createPost } from "../http";
+import { PostContext } from "../store/Post-Context";
+import { MenuContext } from "../store/Menu-Context";
 
-export default function NewPost({ onCancel, afterSubmit }) {
+export default function NewPost() {
+  const { handleResetMenu } = useContext(MenuContext);
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [error, setError] = useState(false);
@@ -35,7 +39,7 @@ export default function NewPost({ onCancel, afterSubmit }) {
       const { title, content } = data;
       const resData = await createPost({ title, content });
       //   console.log(resData);
-      afterSubmit();
+      handleResetMenu();
     } catch (err) {
       setData((prevData) => {
         return {
@@ -86,7 +90,7 @@ export default function NewPost({ onCancel, afterSubmit }) {
         >
           Post
         </button>
-        <button onClick={onCancel}>Cancel</button>
+        <button onClick={handleResetMenu}>Cancel</button>
       </div>
     </section>
   );

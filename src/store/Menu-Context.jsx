@@ -18,69 +18,70 @@ export const MenuContext = createContext({
 function menuContextReducer(state, action) {
   //Menu
   if (action.type === "ADD_POST_MENU") {
-    if (!data.isLoggedIn) {
-      return state((prevData) => ({
-        ...prevData,
-        selectedMenu: "signin",
-      }));
-    }
-    return state((prevData) => ({
-      ...prevData,
+    // if (!data.isLoggedIn) {
+    //   return state((prevData) => ({
+    //     ...prevData,
+    //     selectedMenu: "signin",
+    //   }));
+    // }
+    console.log("CLICKED");
+    return {
+      ...state,
       selectedMenu: "newPost",
-    }));
+    };
   }
   if (action.type === "SHOW_MYPOST_MENU") {
-    if (!data.isLoggedIn) {
-      return state((prevData) => ({
-        ...prevData,
-        selectedMenu: "signin",
-      }));
-    }
-    return state((prevData) => ({
-      ...prevData,
+    // if (!data.isLoggedIn) {
+    //   return state((prevData) => ({
+    //     ...prevData,
+    //     selectedMenu: "signin",
+    //   }));
+    // }
+    return {
+      ...state,
       selectedMenu: "myPost",
-    }));
+    };
   }
   if (action.type === "SELECT_POST_MENU") {
     const { postId } = action.payload;
-    return state((prevData) => ({
-      ...prevData,
+    return {
+      ...state,
       selectedMenu: "select post",
       selectedPostId: postId,
-    }));
+    };
   }
   if (action.type === "EDIT_POST_MENU") {
     const { postId } = action.payload;
-    return state((prevData) => ({
-      ...prevData,
+    return {
+      ...state,
       selectedMenu: "editPost",
       selectedPostId: postId,
-    }));
+    };
   }
   if (action.type === "RESET_MENU") {
-    return state((prevData) => ({
-      ...prevData,
+    return {
+      ...state,
       selectedMenu: "posts",
-    }));
+    };
   }
   if (action.type === "BACK_TO_MYPOST") {
-    return state((prevData) => ({
-      ...prevData,
+    return {
+      ...state,
       selectedMenu: "myPost",
       selectedPostId: null,
-    }));
+    };
   }
   if (action.type === "SIGNIN_MENU") {
-    return state((prevData) => ({
-      ...prevData,
+    return {
+      ...state,
       selectedMenu: "signin",
-    }));
+    };
   }
   if (action.type === "SIGNUP_MENU") {
-    return state((prevData) => ({
-      ...prevData,
+    return {
+      ...state,
       selectedMenu: "signup",
-    }));
+    };
   }
   return state;
 }
