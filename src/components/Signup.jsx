@@ -1,61 +1,53 @@
-import { useState } from "react";
-import { signup } from "../http";
+import { useState, useContext } from "react";
+import { UserContext } from "../store/User-Context";
+import { MenuContext } from "../store/Menu-Context";
 
-export default function Signup({ onLoginClick, afterSubmit }) {
+export default function Signup() {
+  const { signupFn, userContextState } = useContext(UserContext);
+  const { handleSigninMenu, handleResetMenu } = useContext(MenuContext);
+  const [error, setError] = useState(false);
   const [input, setInput] = useState({
     email: "",
     password: "",
     confirmPassword: "",
     username: "",
   });
-  function handleChangeEmail(event) {
-    setInput((prevInput) => {
-      return {
-        ...prevInput,
-        email: event.target.value,
-      };
-    });
-  }
-  function handleChangePassword(event) {
-    setInput((prevInput) => {
-      return {
-        ...prevInput,
-        password: event.target.value,
-      };
-    });
-  }
-  function handleChangeConfirmPassword(event) {
-    setInput((prevInput) => {
-      return {
-        ...prevInput,
-        confirmPassword: event.target.value,
-      };
-    });
-  }
-  function handleChangeUsername(event) {
-    setInput((prevInput) => {
-      return {
-        ...prevInput,
-        username: event.target.value,
-      };
-    });
+  function handleInputChange(identifier, value) {
+    setInput((prevInput) => ({
+      ...prevInput,
+      [identifier]: value,
+    }));
   }
   async function handleSubmit() {
-    try {
-      const resData = await signup({ ...input });
-      console.log(resData);
-      afterSubmit();
-    } catch (err) {
-      console.log(err);
+    const result = await signupFn({ ...input });
+    if (!result) {
+      setError("Failed to signup");
+      return;
     }
+    handleSigninMenu();
   }
+  // async function handleSubmit() {
+  //   try {
+  //     const resData = await signup({ ...input });
+  //     console.log(resData);
+  //     handleResetMenu();
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
   return (
     <section className="w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/4 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-12">
       <h3 className="text-2xl font-semibold">Sign Up</h3>
+      {userContextState.isLoading && (
+        <p open className="animate-pulse text-center absolute z-20">
+          Loading
+        </p>
+      )}
+      {error && <p className="text-red-400">Something went wrong!</p>}
       <div className="relative">
         <input
           value={input.email}
-          onChange={handleChangeEmail}
+          onChange={({ target }) => handleInputChange("email", target.value)}
           className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full peer placeholder-transparent"
           id="email"
           type="text"
@@ -72,7 +64,7 @@ export default function Signup({ onLoginClick, afterSubmit }) {
       <div className="relative">
         <input
           value={input.password}
-          onChange={handleChangePassword}
+          onChange={({ target }) => handleInputChange("password", target.value)}
           className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full peer placeholder-transparent"
           id="password"
           type="password"
@@ -89,7 +81,9 @@ export default function Signup({ onLoginClick, afterSubmit }) {
       <div className="relative">
         <input
           value={input.confirmPassword}
-          onChange={handleChangeConfirmPassword}
+          onChange={({ target }) =>
+            handleInputChange("confirmPassword", target.value)
+          }
           className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full peer placeholder-transparent"
           id="confirmPassword"
           type="password"
@@ -106,7 +100,7 @@ export default function Signup({ onLoginClick, afterSubmit }) {
       <div className="relative">
         <input
           value={input.username}
-          onChange={handleChangeUsername}
+          onChange={({ target }) => handleInputChange("username", target.value)}
           className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full peer placeholder-transparent"
           id="username"
           type="text"
@@ -121,7 +115,7 @@ export default function Signup({ onLoginClick, afterSubmit }) {
         </label>
       </div>
       <div className="flex justify-between mr-2">
-        <button onClick={onLoginClick} className="text-sm hover:underline">
+        <button onClick={handleSigninMenu} className="text-sm hover:underline">
           Already have account?
         </button>
         <button

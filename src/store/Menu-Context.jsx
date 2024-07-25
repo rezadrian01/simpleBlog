@@ -18,12 +18,12 @@ export const MenuContext = createContext({
 function menuContextReducer(state, action) {
   //Menu
   if (action.type === "ADD_POST_MENU") {
-    // if (!data.isLoggedIn) {
-    //   return state((prevData) => ({
-    //     ...prevData,
-    //     selectedMenu: "signin",
-    //   }));
-    // }
+    if (!state.isLoggedIn) {
+      return {
+        ...state,
+        selectedMenu: "signin",
+      };
+    }
     console.log("CLICKED");
     return {
       ...state,
@@ -31,12 +31,12 @@ function menuContextReducer(state, action) {
     };
   }
   if (action.type === "SHOW_MYPOST_MENU") {
-    // if (!data.isLoggedIn) {
-    //   return state((prevData) => ({
-    //     ...prevData,
-    //     selectedMenu: "signin",
-    //   }));
-    // }
+    if (!state.isLoggedIn) {
+      return {
+        ...state,
+        selectedMenu: "signin",
+      };
+    }
     return {
       ...state,
       selectedMenu: "myPost",

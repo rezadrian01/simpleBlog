@@ -1,45 +1,62 @@
-import { useState } from "react";
-import { login } from "../http";
+import { useState, useContext, useEffect } from "react";
+import { UserContext } from "../store/User-Context";
+import { MenuContext } from "../store/Menu-Context";
 
-export default function Signin({ afterSubmit, onSignupClick }) {
+export default function Signin() {
+  const { signinFn, userContextState } = useContext(UserContext);
+  const { handleSignupMenu, handleResetMenu } = useContext(MenuContext);
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
-  function handleChangeEmail(event) {
-    setInput((prevInput) => {
-      return {
-        ...prevInput,
-        email: event.target.value,
-      };
-    });
-  }
-  function handleChangePassword(event) {
-    setInput((prevInput) => {
-      return {
-        ...prevInput,
-        password: event.target.value,
-      };
-    });
+  const [error, setError] = useState(false);
+  function handleInputChange(identifier, value) {
+    setInput((prevInput) => ({
+      ...prevInput,
+      [identifier]: value,
+    }));
   }
   async function handleSubmit() {
-    try {
-      const resData = await login({ ...input });
-      //   console.log(resData);
-      const { token, userId } = resData;
-      localStorage.setItem("token", token);
-      afterSubmit();
-    } catch (err) {
-      console.log(err);
+    const result = await signinFn({ ...input });
+    if (!result) {
+      setError(true);
+      return;
     }
+    handleResetMenu();
+    // try {
+    //   const result = await signinFn({ ...input });
+    //   if (userContextState.hasError) {
+    //     setError(userContextState.hasError);
+    //     return;
+    //   }
+    //   handleResetMenu();
+    // } catch (err) {
+    //   setError("Something went wrong");
+    //   console.log(err);
+    // }
   }
+  // useEffect(() => {
+  //   if (userContextState.hasError) {
+  //     setError(userContextState.hasError);
+  //     return;
+  //   } else {
+  //     handleResetMenu();
+  //   }
+  // }, [userContextState.hasError]);
+
   return (
     <section className="w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/4 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-12">
       <h3 className="text-2xl font-semibold ">Sign In</h3>
+      {userContextState.isLoading && (
+        <p open className="animate-pulse text-center absolute z-20">
+          Loading
+        </p>
+      )}
+      {error && <p className="text-red-400">Something went wrong!</p>}
       <div className="relative">
         <input
           value={input.email}
-          onChange={handleChangeEmail}
+          onChange={({ target }) => handleInputChange("email", target.value)}
           className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full peer placeholder-transparent"
           id="email"
           type="text"
@@ -56,7 +73,7 @@ export default function Signin({ afterSubmit, onSignupClick }) {
       <div className="relative">
         <input
           value={input.password}
-          onChange={handleChangePassword}
+          onChange={({ target }) => handleInputChange("password", target.value)}
           className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full peer placeholder-transparent"
           id="password"
           type="password"
@@ -71,7 +88,7 @@ export default function Signin({ afterSubmit, onSignupClick }) {
         </label>
       </div>
       <div className="flex justify-between mr-2">
-        <button onClick={onSignupClick} className="text-sm hover:underline">
+        <button onClick={handleSignupMenu} className="text-sm hover:underline">
           Don't have account yet?
         </button>
         <button

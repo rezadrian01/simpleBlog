@@ -78,7 +78,7 @@ export default function UserContextProvider({ children }) {
       type: "START_LOADING",
     });
     try {
-      const response = await login(userData);
+      const response = await login({ ...userData });
       userContextDispatch({
         type: "SUCCESS_LOGIN",
         payload: {
@@ -86,10 +86,12 @@ export default function UserContextProvider({ children }) {
           userId: response.userId,
         },
       });
+      return true;
     } catch (err) {
       userContextDispatch({
         type: "FAIL_LOGIN",
       });
+      return false;
     }
   }
 
@@ -102,10 +104,12 @@ export default function UserContextProvider({ children }) {
       userContextDispatch({
         type: "SUCCESS_SIGNUP",
       });
+      return true;
     } catch (err) {
       userContextDispatch({
         type: "FAIL_SIGNUP",
       });
+      return false;
     }
   }
   async function signoutFn() {

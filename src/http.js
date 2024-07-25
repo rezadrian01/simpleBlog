@@ -91,10 +91,10 @@ export async function login(userData) {
       "Content-Type": "application/json",
     },
   });
+  const resData = await response.json();
   if (!response.ok) {
     throw new Error("Failed to login");
   }
-  const resData = response.json();
   return resData;
 }
 export async function signup(userData) {

@@ -5,9 +5,10 @@ import { MenuContext } from "../store/Menu-Context";
 
 export default function NewPost() {
   const { handleResetMenu } = useContext(MenuContext);
+  const { creatingPost, postContextState } = useContext(PostContext);
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  // const [title, setTitle] = useState("");
+  // const [content, setContent] = useState("");
   const [error, setError] = useState(false);
   const [data, setData] = useState({
     title: "",
@@ -32,23 +33,40 @@ export default function NewPost() {
     });
   }
   async function sendingReq() {
-    try {
-      if (!localStorage.getItem("token")) {
-        throw new Error("Token not found!");
-      }
-      const { title, content } = data;
-      const resData = await createPost({ title, content });
-      //   console.log(resData);
-      handleResetMenu();
-    } catch (err) {
-      setData((prevData) => {
-        return {
-          ...prevData,
-          error: err.message || "Failed to create post.",
-        };
-      });
+    if (!localStorage.getItem("token")) {
+      setError("Not authenticated");
+      return;
     }
+    //post data
+    const result = await creatingPost({
+      title: data.title,
+      content: data.content,
+    });
+    console.log(result);
+    if (postContextState.hasError) {
+      setError(postContextState.hasError);
+      return;
+    }
+    handleResetMenu();
   }
+  // async function sendingReq() {
+  //   try {
+  //     if (!localStorage.getItem("token")) {
+  //       throw new Error("Token not found!");
+  //     }
+  //     const { title, content } = data;
+  //     const resData = await createPost({ title, content });
+  //     //   console.log(resData);
+  //     handleResetMenu();
+  //   } catch (err) {
+  //     setData((prevData) => {
+  //       return {
+  //         ...prevData,
+  //         error: err.message || "Failed to create post.",
+  //       };
+  //     });
+  //   }
+  // }
   function handlePost() {
     sendingReq();
   }
