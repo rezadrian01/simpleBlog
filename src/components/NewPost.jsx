@@ -16,22 +16,28 @@ export default function NewPost() {
     error: false,
     isLoading: false,
   });
-  function handleChangeTitle(event) {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        title: event.target.value,
-      };
-    });
+  function handleInputChange(identifier, value) {
+    setData((prevValue) => ({
+      ...prevValue,
+      [identifier]: value,
+    }));
   }
-  function handleChangeContent(event) {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        content: event.target.value,
-      };
-    });
-  }
+  // function handleChangeTitle(event) {
+  //   setData((prevData) => {
+  //     return {
+  //       ...prevData,
+  //       title: event.target.value,
+  //     };
+  //   });
+  // }
+  // function handleChangeContent(event) {
+  //   setData((prevData) => {
+  //     return {
+  //       ...prevData,
+  //       content: event.target.value,
+  //     };
+  //   });
+  // }
   async function sendingReq() {
     if (!localStorage.getItem("token")) {
       setError("Not authenticated");
@@ -43,30 +49,12 @@ export default function NewPost() {
       content: data.content,
     });
     console.log(result);
-    if (postContextState.hasError) {
-      setError(postContextState.hasError);
+    if (!result) {
+      setError(true);
       return;
     }
     handleResetMenu();
   }
-  // async function sendingReq() {
-  //   try {
-  //     if (!localStorage.getItem("token")) {
-  //       throw new Error("Token not found!");
-  //     }
-  //     const { title, content } = data;
-  //     const resData = await createPost({ title, content });
-  //     //   console.log(resData);
-  //     handleResetMenu();
-  //   } catch (err) {
-  //     setData((prevData) => {
-  //       return {
-  //         ...prevData,
-  //         error: err.message || "Failed to create post.",
-  //       };
-  //     });
-  //   }
-  // }
   function handlePost() {
     sendingReq();
   }
@@ -82,7 +70,7 @@ export default function NewPost() {
           Title
         </label>
         <input
-          onChange={handleChangeTitle}
+          onChange={({ target }) => handleInputChange("title", target.value)}
           value={data.title}
           id="title"
           className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full"
@@ -94,7 +82,7 @@ export default function NewPost() {
           Content
         </label>
         <textarea
-          onChange={handleChangeContent}
+          onChange={({ target }) => handleInputChange("content", target.value)}
           value={data.content}
           id="content"
           className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full"

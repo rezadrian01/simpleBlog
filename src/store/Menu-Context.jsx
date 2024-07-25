@@ -18,7 +18,7 @@ export const MenuContext = createContext({
 function menuContextReducer(state, action) {
   //Menu
   if (action.type === "ADD_POST_MENU") {
-    if (!state.isLoggedIn) {
+    if (!action.payload.isLoggedIn) {
       return {
         ...state,
         selectedMenu: "signin",
@@ -31,7 +31,7 @@ function menuContextReducer(state, action) {
     };
   }
   if (action.type === "SHOW_MYPOST_MENU") {
-    if (!state.isLoggedIn) {
+    if (!action.payload.isLoggedIn) {
       return {
         ...state,
         selectedMenu: "signin",
@@ -91,14 +91,20 @@ export default function MenuContextProvider({ children }) {
     menuContextReducer,
     { selectedMenu: "posts", selectedPostId: null }
   );
-  function handleAddPostMenu() {
+  function handleAddPostMenu(isLoggedIn) {
     menuContextDispatch({
       type: "ADD_POST_MENU",
+      payload: {
+        isLoggedIn,
+      },
     });
   }
-  function handleMyPostMenu() {
+  function handleMyPostMenu(isLoggedIn) {
     menuContextDispatch({
       type: "SHOW_MYPOST_MENU",
+      payload: {
+        isLoggedIn,
+      },
     });
   }
   function handleSelectPostMenu(postId) {

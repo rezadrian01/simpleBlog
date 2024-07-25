@@ -1,6 +1,7 @@
 import { useContext } from "react";
 
 import { MenuContext } from "./store/Menu-Context";
+import { UserContext } from "./store/User-Context";
 
 import Posts from "./components/Posts";
 import Nav from "./components/Nav";
@@ -17,6 +18,8 @@ function App() {
   //   isLoggedIn: false,
   // });
   const { menuContextState } = useContext(MenuContext);
+  const { userContextState } = useContext(UserContext);
+  console.log(userContextState);
   const { selectedMenu } = menuContextState;
   // console.log(selectedMenu);
   function MainContent() {

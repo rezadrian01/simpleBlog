@@ -23,26 +23,7 @@ export default function Signin() {
       return;
     }
     handleResetMenu();
-    // try {
-    //   const result = await signinFn({ ...input });
-    //   if (userContextState.hasError) {
-    //     setError(userContextState.hasError);
-    //     return;
-    //   }
-    //   handleResetMenu();
-    // } catch (err) {
-    //   setError("Something went wrong");
-    //   console.log(err);
-    // }
   }
-  // useEffect(() => {
-  //   if (userContextState.hasError) {
-  //     setError(userContextState.hasError);
-  //     return;
-  //   } else {
-  //     handleResetMenu();
-  //   }
-  // }, [userContextState.hasError]);
 
   return (
     <section className="w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/4 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-12">

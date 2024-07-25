@@ -127,10 +127,12 @@ export default function PostContextProvider({ children }) {
         type: "SUCCESS_CREATE_POST",
         payload: resData,
       });
+      return true;
     } catch (err) {
       postContextDispatch({
         type: "FAIL_CREATE_POST",
       });
+      return false;
     }
   }
   async function fetchingPosts() {

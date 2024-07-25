@@ -23,8 +23,14 @@ export default function Nav() {
           <button onClick={handleResetMenu}>Blog Now</button>
         </li>
         <li className="flex gap-8">
-          <button onClick={handleAddPostMenu}>Create Post</button>
-          <button onClick={handleMyPostMenu}>My Posts</button>
+          <button
+            onClick={() => handleAddPostMenu(userContextState.isLoggedIn)}
+          >
+            Create Post
+          </button>
+          <button onClick={() => handleMyPostMenu(userContextState.isLoggedIn)}>
+            My Posts
+          </button>
         </li>
         <li className="flex gap-4">
           {!isLoggedIn && <button onClick={handleSigninMenu}>Sign In</button>}
