@@ -17,6 +17,7 @@ export default function MyPost({ onEditing }) {
       setData((prevData) => {
         return {
           ...prevData,
+          userPosts: [...prevData.userPosts],
           error: err.message || "Failed to delete post.",
         };
       });

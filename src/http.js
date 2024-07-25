@@ -1,4 +1,4 @@
-const host = "https://l09p9sgr-8080.asse.devtunnels.ms";
+const host = "http://localhost:8080";
 
 export async function fetchPosts() {
   const response = await fetch(`${host}/feed/posts`);

@@ -9,30 +9,14 @@ import MyPost from "./components/MyPost";
 import EditPost from "./components/EditPost";
 
 function App() {
-  const [data, setData] = useState({
-    selectedMenu: "posts",
-    selectedPostId: null,
-    isLoggedIn: false,
-  });
+  // const [data, setData] = useState({
+  //   selectedMenu: "posts",
+  //   selectedPostId: null,
+  //   isLoggedIn: false,
+  // });
   useEffect(() => {
     tokenCheck();
   }, []);
-  function handleAddPost() {
-    if (!data.isLoggedIn) {
-      return setData((prevData) => {
-        return {
-          ...prevData,
-          selectedMenu: "signin",
-        };
-      });
-    }
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "newPost",
-      };
-    });
-  }
   function handleSignin() {
     setData((prevData) => {
       return {
@@ -49,58 +33,7 @@ function App() {
       };
     });
   }
-  function handleResetMenu() {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "posts",
-      };
-    });
-    tokenCheck();
-  }
-  function handleShowMyPost() {
-    if (!data.isLoggedIn) {
-      return setData((prevData) => {
-        return {
-          ...prevData,
-          selectedMenu: "signin",
-        };
-      });
-    }
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "myPost",
-      };
-    });
-  }
-  function handleSelectPost(postId) {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "select post",
-        selectedPostId: postId,
-      };
-    });
-  }
-  function handleEditPost(postId) {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "edit post",
-        selectedPostId: postId,
-      };
-    });
-  }
-  function handleBackToMyPost() {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "myPost",
-        selectedPostId: null,
-      };
-    });
-  }
+
   //auth
   function handleLogout() {
     localStorage.removeItem("token");
