@@ -9,7 +9,10 @@ function userContextReducer(state, action) {
 export default function UserContextProvider({ children }) {
   const [userContextState, userContextDispatch] = useReducer(
     userContextReducer,
-    {}
+    {
+      userId: null,
+      isLoggedIn: false,
+    }
   );
   const ctxValue = {};
   return (

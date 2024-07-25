@@ -17,22 +17,6 @@ function App() {
   useEffect(() => {
     tokenCheck();
   }, []);
-  function handleSignin() {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "signin",
-      };
-    });
-  }
-  function handleSignup() {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        selectedMenu: "signup",
-      };
-    });
-  }
 
   //auth
   function handleLogout() {

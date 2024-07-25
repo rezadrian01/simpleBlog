@@ -4,14 +4,15 @@ export const MenuContext = createContext({
   menuContextState: {
     selectedMenu: "posts",
     selectedPostId: null,
-    isLoggedIn: false,
   },
-  handleAddPostMenu,
-  handleAddPostMenu,
-  handleSelectPostMenu,
-  handleEditPostMenu,
-  handleResetMenu,
-  handleBackToMyPostMenu,
+  handleAddPostMenu: () => {},
+  handleAddPostMenu: () => {},
+  handleSelectPostMenu: (postId) => {},
+  handleEditPostMenu: (postId) => {},
+  handleResetMenu: () => {},
+  handleBackToMyPostMenu: () => {},
+  handleSigninMenu: () => {},
+  handleSignupMenu: () => {},
 });
 
 function menuContextReducer(state, action) {
@@ -69,13 +70,25 @@ function menuContextReducer(state, action) {
       selectedPostId: null,
     }));
   }
+  if (action.type === "SIGNIN_MENU") {
+    return state((prevData) => ({
+      ...prevData,
+      selectedMenu: "signin",
+    }));
+  }
+  if (action.type === "SIGNUP_MENU") {
+    return state((prevData) => ({
+      ...prevData,
+      selectedMenu: "signup",
+    }));
+  }
   return state;
 }
 
 export default function MenuContextProvider({ children }) {
   const [menuContextState, menuContextDispatch] = useReducer(
     menuContextReducer,
-    {}
+    { selectedMenu: "posts", selectedPostId: null }
   );
   function handleAddPostMenu() {
     menuContextDispatch({
@@ -109,6 +122,17 @@ export default function MenuContextProvider({ children }) {
       type: "BACK_TO_MYPOST",
     });
   }
+  function handleSigninMenu() {
+    menuContextDispatch({
+      type: "SIGNIN_MENU",
+    });
+  }
+  function handleSignupMenu() {
+    menuContextDispatch({
+      type: "SIGNUP_MENU",
+    });
+  }
+
   const ctxValue = {
     menuContextState,
     handleAddPostMenu,
@@ -117,6 +141,8 @@ export default function MenuContextProvider({ children }) {
     handleEditPostMenu,
     handleResetMenu,
     handleBackToMyPostMenu,
+    handleSigninMenu,
+    handleSignupMenu,
   };
   return (
     <MenuContext.Provider value={ctxValue}>{children}</MenuContext.Provider>
