@@ -1,6 +1,6 @@
 export default function Error({
   title = "An error occured",
-  content = "Something went wrong please comeback again later.",
+  content = "Something went wrong, please comeback again later.",
 }) {
   return (
     <div className="text-center">

@@ -52,7 +52,7 @@ exports.postLogin = async (req, res, next) => {
         userId: user._id.toString(),
       },
       "somesupersecretsecret",
-      { expiresIn: "5hr" }
+      { expiresIn: "365 days" }
     );
     res
       .status(200)

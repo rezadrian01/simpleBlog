@@ -84,7 +84,7 @@ export async function deletePost(postId) {
 
 //auth
 export async function login(userData) {
-  const response = await fetch(`${host}/auth/login`, {
+  const response = await fetch(`${host}/auth/logins`, {
     method: "POST",
     body: JSON.stringify({ ...userData }),
     headers: {
