@@ -27,7 +27,7 @@ export default function Nav() {
     handleResetMenu();
   }
   return (
-    <nav className="bg-slate-700 px-4 py-6 rounded mb-24">
+    <nav className="bg-slate-700 px-4 py-6 rounded mb-20">
       <ul className="flex justify-between">
         <li>
           <button onClick={handleResetMenu}>Blog Now</button>

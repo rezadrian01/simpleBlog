@@ -1,8 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-import { deletePost, getUserPost } from "../http";
+import { deletePost } from "../http";
 import PostCard from "./PostCard";
+
+//context
 import { PostContext } from "../store/Post-Context";
 import { MenuContext } from "../store/Menu-Context";
+
+import Loading from "./Loading";
+import Error from "./Error";
 
 export default function MyPost() {
   const { fetchingUserPosts, postContextState } = useContext(PostContext);
@@ -34,7 +39,7 @@ export default function MyPost() {
   useEffect(() => {
     async function fetchUserPost() {
       const result = await fetchingUserPosts();
-      if (!result) {
+      if (!postContextState.isLoading && postContextState.hasError) {
         setError(true);
       } else {
         setError(false);
@@ -45,24 +50,25 @@ export default function MyPost() {
   }, [fetchingUserPosts]);
   return (
     <section>
-      {postContextState.isLoading && (
-        <p className="text-center animate-pulse">Fetching user post...</p>
-      )}
-      {!postContextState.hasError && postContextState.posts?.length > 0 && (
-        <ol className="flex flex-col gap-4">
-          {postContextState.posts?.map((post) => {
-            return (
-              <PostCard
-                key={post._id.toString()}
-                post={post}
-                isMyPost={true}
-                handleEditPostMenu={handleEditPostMenu}
-                onDelete={handleDeletePost}
-              />
-            );
-          })}
-        </ol>
-      )}
+      {postContextState.hasError && <Error />}
+      {postContextState.isLoading && <Loading />}
+      {!postContextState.hasError &&
+        !postContextState.isLoading &&
+        postContextState.posts?.length > 0 && (
+          <ol className="flex flex-col gap-4">
+            {postContextState.posts?.map((post) => {
+              return (
+                <PostCard
+                  key={post._id.toString()}
+                  post={post}
+                  isMyPost={true}
+                  handleEditPostMenu={handleEditPostMenu}
+                  onDelete={handleDeletePost}
+                />
+              );
+            })}
+          </ol>
+        )}
       {!postContextState.hasError &&
         !postContextState.isLoading &&
         postContextState.posts?.length === 0 && (

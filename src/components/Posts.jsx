@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import { fetchPosts } from "../http";
 import PostCard from "./PostCard";
 import { PostContext } from "../store/Post-Context";
+import Loading from "./Loading";
+import Error from "./Error";
 
 export default function Posts() {
   const { fetchingPosts, postContextState } = useContext(PostContext);
@@ -10,26 +12,34 @@ export default function Posts() {
   useEffect(() => {
     async function fetchPosts() {
       const result = await fetchingPosts();
-      if (!result) {
+      if (!postContextState.isLoading && postContextState.hasError) {
         setError(true);
       } else {
         setError(false);
       }
       return;
+      // if (!result) {
+      //   setError(true);
+      // } else {
+      //   setError(false);
+      // }
+      // return;
     }
     fetchPosts();
   }, [fetchingPosts]);
 
-  if (error) {
-    return (
-      <div className="text-center">
-        <h3 className="text-xl">An error occured</h3>
-        <p>Something went wrong please comeback later.</p>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="text-center">
+  //       <h3 className="text-xl">An error occured</h3>
+  //       <p>Something went wrong please comeback later.</p>
+  //     </div>
+  //   );
+  // }
   return (
     <>
+      {postContextState.hasError && <Error />}
+      {postContextState.isLoading && <Loading />}
       {!postContextState.isLoading && (
         <ol className="flex flex-col gap-4">
           {postContextState.posts.map((post) => {
@@ -37,13 +47,11 @@ export default function Posts() {
           })}
         </ol>
       )}
-      {postContextState.isLoading && (
-        <p className="animate-pulse text-center">Fetching post...</p>
+      {!postContextState.isLoading && !postContextState.hasError && (
+        <p className="text-center font-thin mt-8 text-slate-500">
+          Total Posts: {postContextState.totalPosts}
+        </p>
       )}
-      <p className="text-center font-thin mt-8 text-slate-500">
-        {!postContextState.isLoading &&
-          "Total Posts: " + postContextState.totalPosts}
-      </p>
     </>
   );
 }

@@ -32,6 +32,9 @@ function postContextReducer(state, action) {
       return {
         ...state,
         isLoading: true,
+        posts: [],
+        totalPosts: 0,
+        hasError: false,
       };
 
     //create
@@ -196,6 +199,7 @@ export default function PostContextProvider({ children }) {
     });
     try {
       const resData = await getUserPost();
+      console.log(resData);
       postContextDispatch({
         type: "SUCCESS_FETCH_USER_POST",
         payload: {
