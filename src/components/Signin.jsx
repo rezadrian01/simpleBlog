@@ -27,13 +27,15 @@ export default function Signin() {
 
   return (
     <section className="w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/4 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-12">
-      <h3 className="text-2xl font-semibold ">Sign In</h3>
-      {userContextState.isLoading && (
-        <p open className="animate-pulse text-center absolute z-20">
-          Loading
-        </p>
-      )}
-      {error && <p className="text-red-400">Something went wrong!</p>}
+      <div>
+        <h3 className="text-2xl font-semibold ">Sign In</h3>
+        {userContextState.isLoading && (
+          <p open className="animate-pulse text-center  z-20">
+            Loading
+          </p>
+        )}
+        {error && <p className="text-red-400">Something went wrong!</p>}
+      </div>
       <div className="relative">
         <input
           value={input.email}

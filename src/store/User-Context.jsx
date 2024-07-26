@@ -67,6 +67,8 @@ function userContextReducer(state, action) {
       return {
         ...state,
         isLoggedIn: false,
+        isLoading: false,
+        hasError: false,
         userId: null,
       };
   }
