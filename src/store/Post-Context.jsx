@@ -6,6 +6,7 @@ import {
   fetchPost,
   updatePost,
   deletePost,
+  getUserPost,
 } from "../http.js";
 
 export const PostContext = createContext({
@@ -19,6 +20,7 @@ export const PostContext = createContext({
   creatingPost: () => {},
   fetchingPosts: () => {},
   fetchingPost: () => {},
+  fetchingUserPosts: () => {},
   updatingPost: () => {},
   deletingPost: () => {},
 });
@@ -74,6 +76,21 @@ function postContextReducer(state, action) {
       return {
         ...state,
         hasError: "Failed to fetch post",
+        isLoading: false,
+      };
+    case "SUCCESS_FETCH_USER_POST":
+      return {
+        ...state,
+        isLoading: false,
+        posts: [...action.payload.posts],
+        totalPosts: action.payload.totalPosts,
+        hasError: false,
+      };
+    case "FAIL_FETCH_USER_POST":
+      return {
+        ...state,
+        hasError: "Failed to fetch user posts",
+        isLoading: false,
       };
 
     //update
@@ -153,7 +170,7 @@ export default function PostContextProvider({ children }) {
       return false;
     }
   }, []);
-  async function fetchingPost(postId) {
+  const fetchingPost = useCallback(async function fetchingPost(postId) {
     postContextDispatch({
       type: "STARTING_LOADING",
     });
@@ -172,7 +189,29 @@ export default function PostContextProvider({ children }) {
       });
       return false;
     }
-  }
+  });
+  const fetchingUserPosts = useCallback(async function fetchingUserPost() {
+    postContextDispatch({
+      type: "STARTING_LOADING",
+    });
+    try {
+      const resData = await getUserPost();
+      postContextDispatch({
+        type: "SUCCESS_FETCH_USER_POST",
+        payload: {
+          posts: resData.posts,
+          totalPosts: resData.totalPosts,
+        },
+      });
+      return true;
+    } catch (err) {
+      postContextDispatch({
+        type: "FAIL_FETCH_USER_POST",
+      });
+      return false;
+    }
+  }, []);
+
   async function updatingPost(postId, postData) {
     postContextDispatch({
       type: "STARTING_LOADING",
@@ -214,6 +253,7 @@ export default function PostContextProvider({ children }) {
     creatingPost,
     fetchingPosts,
     fetchingPost,
+    fetchingUserPosts,
     updatingPost,
     deletingPost,
   };

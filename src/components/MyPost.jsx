@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { deletePost, getUserPost } from "../http";
 import PostCard from "./PostCard";
+import { PostContext } from "../store/Post-Context";
+import { MenuContext } from "../store/Menu-Context";
 
-export default function MyPost({ onEditing }) {
-  const [data, setData] = useState({
-    userPosts: [],
-    totalPost: 0,
-    error: false,
-    isFetching: false,
-  });
+export default function MyPost() {
+  const { fetchingUserPosts, postContextState } = useContext(PostContext);
+  const { handleEditPostMenu } = useContext(MenuContext);
+  const [error, setError] = useState(false);
   async function handleDeletePost(postId) {
     try {
       const resData = await deletePost(postId);
@@ -33,64 +32,42 @@ export default function MyPost({ onEditing }) {
     });
   }
   useEffect(() => {
-    async function fetchingUserPost() {
-      setData((prevData) => {
-        return {
-          ...prevData,
-          isFetching: true,
-        };
-      });
-      try {
-        const resData = await getUserPost();
-        // console.log(resData);
-        setData((prevData) => {
-          return {
-            ...prevData,
-            userPosts: [...resData.posts],
-            totalPost: resData.totalPosts,
-          };
-        });
-      } catch (err) {
-        setData((prevData) => {
-          return {
-            ...prevData,
-            error: err.message || "Failed to fetching user posts",
-          };
-        });
-        console.log(err);
+    async function fetchUserPost() {
+      const result = await fetchingUserPosts();
+      if (!result) {
+        setError(true);
+      } else {
+        setError(false);
       }
-      setData((prevData) => {
-        return {
-          ...prevData,
-          isFetching: false,
-        };
-      });
+      return;
     }
-    fetchingUserPost();
-  }, []);
+    fetchUserPost();
+  }, [fetchingUserPosts]);
   return (
     <section>
-      {data.isFetching && (
+      {postContextState.isLoading && (
         <p className="text-center animate-pulse">Fetching user post...</p>
       )}
-      {!data.error && data.userPosts?.length > 0 && (
+      {!postContextState.hasError && postContextState.posts?.length > 0 && (
         <ol className="flex flex-col gap-4">
-          {data.userPosts?.map((post) => {
+          {postContextState.posts?.map((post) => {
             return (
               <PostCard
                 key={post._id.toString()}
                 post={post}
                 isMyPost={true}
-                onEditing={onEditing}
+                handleEditPostMenu={handleEditPostMenu}
                 onDelete={handleDeletePost}
               />
             );
           })}
         </ol>
       )}
-      {!data.error && !data.isFetching && data.userPosts?.length === 0 && (
-        <p className="text-center">You dont have any post yet.</p>
-      )}
+      {!postContextState.hasError &&
+        !postContextState.isLoading &&
+        postContextState.posts?.length === 0 && (
+          <p className="text-center">You dont have any post yet.</p>
+        )}
     </section>
   );
 }
