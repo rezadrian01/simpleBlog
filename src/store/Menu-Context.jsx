@@ -24,7 +24,6 @@ function menuContextReducer(state, action) {
         selectedMenu: "signin",
       };
     }
-    console.log("CLICKED");
     return {
       ...state,
       selectedMenu: "newPost",

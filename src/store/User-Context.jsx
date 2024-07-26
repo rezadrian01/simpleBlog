@@ -11,6 +11,7 @@ export const UserContext = createContext({
   },
   signinFn: (userData) => {},
   signupFn: (userData) => {},
+  tokenCheck: () => {},
   signoutFn: () => {},
 });
 
@@ -51,6 +52,15 @@ function userContextReducer(state, action) {
         isLoading: false,
         hasError: "Failed to signup",
       };
+
+    case "TOKEN_CHECK":
+      if (localStorage.getItem("token")) {
+        return {
+          ...state,
+          isLoggedIn: true,
+          isLoading: false,
+        };
+      }
 
     case "SIGNOUT":
       localStorage.removeItem("token");
@@ -112,6 +122,19 @@ export default function UserContextProvider({ children }) {
       return false;
     }
   }
+  function tokenCheck() {
+    userContextDispatch({
+      type: "START_LOADING",
+    });
+    try {
+      userContextDispatch({
+        type: "TOKEN_CHECK",
+      });
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
   async function signoutFn() {
     userContextDispatch({
       type: "SIGNOUT",
@@ -123,6 +146,7 @@ export default function UserContextProvider({ children }) {
     userContextState,
     signinFn,
     signupFn,
+    tokenCheck,
     signoutFn,
   };
   return (

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import { UserContext } from "../store/User-Context";
 import { MenuContext } from "../store/Menu-Context";
@@ -13,9 +13,15 @@ export default function Nav() {
   } = useContext(MenuContext);
 
   //user
-  const { userContextState, signoutFn } = useContext(UserContext);
+  const { userContextState, signoutFn, tokenCheck } = useContext(UserContext);
   const { isLoggedIn } = userContextState;
-
+  useEffect(() => {
+    const result = tokenCheck();
+    if (!result) {
+      return;
+    }
+    return;
+  }, []);
   return (
     <nav className="bg-slate-700 px-4 py-6 rounded mb-24">
       <ul className="flex justify-between">

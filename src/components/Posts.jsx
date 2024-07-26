@@ -1,49 +1,49 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { fetchPosts } from "../http";
 import PostCard from "./PostCard";
+import { PostContext } from "../store/Post-Context";
 
 export default function Posts() {
-  const [posts, setposts] = useState({
-    posts: [],
-    totalPost: 0,
-    fetched: false,
-  });
-  const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState();
-
+  const { fetchingPosts, postContextState } = useContext(PostContext);
+  const [error, setError] = useState(false);
+  // console.log(error);
   useEffect(() => {
-    setIsFetching(true);
-    async function fetchingPosts() {
-      try {
-        const resultPosts = await fetchPosts();
-        setposts({
-          posts: [...resultPosts.posts],
-          totalPost: resultPosts.totalPost,
-          fetched: true,
-        });
-      } catch (err) {
-        setError({ message: err.message || "Failed to fetching posts" });
+    async function fetchPosts() {
+      const result = await fetchingPosts();
+      if (!result) {
+        setError(true);
+      } else {
+        setError(false);
       }
-      setIsFetching(false);
+      return;
     }
-    fetchingPosts();
-  }, []);
+    fetchPosts();
+  }, [fetchingPosts]);
+
   if (error) {
-    return <p>An error occured</p>;
+    return (
+      <div className="text-center">
+        <h3 className="text-xl">An error occured</h3>
+        <p>Something went wrong please comeback later.</p>
+      </div>
+    );
   }
   return (
     <>
-      {posts.fetched && (
+      {!postContextState.isLoading && (
         <ol className="flex flex-col gap-4">
-          {posts.posts.map((post) => {
+          {postContextState.posts.map((post) => {
             return <PostCard key={post._id} post={post} />;
           })}
         </ol>
       )}
-      {isFetching && (
+      {postContextState.isLoading && (
         <p className="animate-pulse text-center">Fetching post...</p>
       )}
-      <p>{!isFetching && posts.totalPost}</p>
+      <p className="text-center font-thin mt-8 text-slate-500">
+        {!postContextState.isLoading &&
+          "Total Posts: " + postContextState.totalPosts}
+      </p>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useCallback } from "react";
 
 import {
   createPost,
@@ -135,7 +135,7 @@ export default function PostContextProvider({ children }) {
       return false;
     }
   }
-  async function fetchingPosts() {
+  const fetchingPosts = useCallback(async function fetchingPosts() {
     postContextDispatch({
       type: "STARTING_LOADING",
     });
@@ -145,12 +145,14 @@ export default function PostContextProvider({ children }) {
         type: "SUCCESS_FETCH_POSTS",
         payload: { posts: [...resData.posts], totalPosts: resData.totalPosts },
       });
+      return true;
     } catch (err) {
       postContextDispatch({
         type: "FAIL_FETCH_POSTS",
       });
+      return false;
     }
-  }
+  }, []);
   async function fetchingPost(postId) {
     postContextDispatch({
       type: "STARTING_LOADING",
@@ -163,10 +165,12 @@ export default function PostContextProvider({ children }) {
           post: resData.post,
         },
       });
+      return true;
     } catch (err) {
       postContextDispatch({
         type: "FAIL_FETCH_POST",
       });
+      return false;
     }
   }
   async function updatingPost(postId, postData) {
@@ -178,10 +182,12 @@ export default function PostContextProvider({ children }) {
       postContextDispatch({
         type: "SUCCESS_UPDATE_POST",
       });
+      return true;
     } catch (err) {
       postContextDispatch({
         type: "FAIL_UPDATE_POST",
       });
+      return false;
     }
   }
   async function deletingPost(postId) {
@@ -193,10 +199,12 @@ export default function PostContextProvider({ children }) {
         },
       });
       const resData = await deletePost(postId);
+      return true;
     } catch (err) {
       postContextDispatch({
         type: "FAIL_DELETE_POST",
       });
+      return false;
     }
   }
 
