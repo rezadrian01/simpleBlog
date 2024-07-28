@@ -10,70 +10,73 @@ import Loading from "./Loading";
 import Error from "./Error";
 
 export default function MyPost() {
-  const { fetchingUserPosts, postContextState } = useContext(PostContext);
-  const { handleEditPostMenu } = useContext(MenuContext);
-  const [error, setError] = useState(false);
+  const { fetchingUserPosts, deletingPost, postContextState, resetState } =
+    useContext(PostContext);
+  const [data, setData] = useState({
+    error: false,
+    isLoading: false,
+    posts: [],
+    totalPosts: 0,
+  });
   async function handleDeletePost(postId) {
-    try {
-      const resData = await deletePost(postId);
-      console.log(resData);
-    } catch (err) {
-      setData((prevData) => {
-        return {
-          ...prevData,
-          userPosts: [...prevData.userPosts],
-          error: err.message || "Failed to delete post.",
-        };
-      });
-      console.log(err);
+    setData((prevData) => ({
+      ...prevData,
+      posts: prevData.posts.filter((post) => post._id !== postId),
+    }));
+    const result = await deletingPost(postId);
+    if (!result) {
+      setData((prevData) => ({ ...prevData, error: true }));
+      return;
     }
-    setData((prevData) => {
-      return {
-        ...prevData,
-        userPosts: [
-          ...prevData.userPosts.filter((post) => post._id !== postId),
-        ],
-      };
-    });
+    return;
   }
+
   useEffect(() => {
     async function fetchUserPost() {
-      const result = await fetchingUserPosts();
-      if (!postContextState.isLoading && postContextState.hasError) {
-        setError(true);
-      } else {
-        setError(false);
+      if (!data.isLoading) {
+        setData((prevData) => ({ ...prevData, isLoading: true }));
       }
+      const result = await fetchingUserPosts();
+      if (!data.isLoading && data.error) {
+        setData((prevData) => ({
+          ...prevData,
+          isLoading: false,
+          error: true,
+        }));
+        return;
+      }
+      setData((prevData) => ({
+        ...prevData,
+        posts: result.posts,
+        totalPosts: result.totalPosts,
+        isLoading: false,
+        error: false,
+      }));
       return;
     }
     fetchUserPost();
   }, [fetchingUserPosts]);
   return (
     <section>
-      {postContextState.hasError && <Error />}
-      {postContextState.isLoading && <Loading />}
-      {!postContextState.hasError &&
-        !postContextState.isLoading &&
-        postContextState.posts?.length > 0 && (
-          <ol className="flex flex-col gap-4">
-            {postContextState.posts?.map((post) => {
-              return (
-                <PostCard
-                  key={post._id.toString()}
-                  post={post}
-                  isMyPost={true}
-                  handleEditPostMenu={handleEditPostMenu}
-                  onDelete={handleDeletePost}
-                />
-              );
-            })}
-          </ol>
-        )}
-      {!postContextState.hasError &&
-        !postContextState.isLoading &&
-        postContextState.posts?.length === 0 && (
-          <p className="text-center">You dont have any post yet.</p>
-        )}
+      {data.error && <Error />}
+      {data.isLoading && <Loading />}
+      {!data.error && !data.isLoading && data.posts?.length > 0 && (
+        <ol className="flex flex-col gap-4">
+          {data.posts?.map((post) => {
+            return (
+              <PostCard
+                key={post._id.toString()}
+                post={post}
+                isMyPost={true}
+                onDelete={handleDeletePost}
+              />
+            );
+          })}
+        </ol>
+      )}
+      {!data.error && !data.isLoading && data.posts?.length === 0 && (
+        <p className="text-center">You dont have any post yet.</p>
+      )}
     </section>
   );
 }

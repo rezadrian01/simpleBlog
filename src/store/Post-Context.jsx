@@ -23,10 +23,11 @@ export const PostContext = createContext({
   fetchingUserPosts: () => {},
   updatingPost: () => {},
   deletingPost: () => {},
+  resetState: () => {},
 });
 
+let tempValue;
 function postContextReducer(state, action) {
-  let tempValue;
   switch (action.type) {
     case "STARTING_LOADING":
       return {
@@ -70,7 +71,7 @@ function postContextReducer(state, action) {
     case "SUCCESS_FETCH_POST":
       return {
         ...state,
-        currentPost: action.payload.post,
+        currentPost: { ...action.payload.post },
         isLoading: false,
         hasError: false,
       };
@@ -115,12 +116,22 @@ function postContextReducer(state, action) {
       return {
         ...state,
         posts: deletedPosts,
+        hasError: false,
       };
     case "FAIL_DELETE_POST":
       return {
         ...state,
         posts: [...tempValue],
         hasError: "Failed to deleting post.",
+      };
+
+    case "RESET_STATE":
+      return {
+        posts: [],
+        isLoading: false,
+        hasError: false,
+        totalPosts: 0,
+        currentPost: {},
       };
   }
   return state;
@@ -138,9 +149,9 @@ export default function PostContextProvider({ children }) {
     }
   );
   async function creatingPost(postData) {
-    postContextDispatch({
-      type: "STARTING_LOADING",
-    });
+    // postContextDispatch({
+    //   type: "STARTING_LOADING",
+    // });
     try {
       const resData = await createPost({ ...postData });
       postContextDispatch({
@@ -156,16 +167,16 @@ export default function PostContextProvider({ children }) {
     }
   }
   const fetchingPosts = useCallback(async function fetchingPosts() {
-    postContextDispatch({
-      type: "STARTING_LOADING",
-    });
+    // postContextDispatch({
+    //   type: "STARTING_LOADING",
+    // });
     try {
       const resData = await fetchPosts();
       postContextDispatch({
         type: "SUCCESS_FETCH_POSTS",
         payload: { posts: [...resData.posts], totalPosts: resData.totalPosts },
       });
-      return true;
+      return { posts: resData.posts, totalPosts: resData.totalPosts };
     } catch (err) {
       postContextDispatch({
         type: "FAIL_FETCH_POSTS",
@@ -174,32 +185,31 @@ export default function PostContextProvider({ children }) {
     }
   }, []);
   const fetchingPost = useCallback(async function fetchingPost(postId) {
-    postContextDispatch({
-      type: "STARTING_LOADING",
-    });
+    // postContextDispatch({
+    //   type: "STARTING_LOADING",
+    // });
     try {
       const resData = await fetchPost(postId);
       postContextDispatch({
         type: "SUCCESS_FETCH_POST",
         payload: {
-          post: resData.post,
+          post: { ...resData.post },
         },
       });
-      return true;
+      return resData;
     } catch (err) {
       postContextDispatch({
         type: "FAIL_FETCH_POST",
       });
       return false;
     }
-  });
+  }, []);
   const fetchingUserPosts = useCallback(async function fetchingUserPost() {
-    postContextDispatch({
-      type: "STARTING_LOADING",
-    });
+    // postContextDispatch({
+    //   type: "STARTING_LOADING",
+    // });
     try {
       const resData = await getUserPost();
-      console.log(resData);
       postContextDispatch({
         type: "SUCCESS_FETCH_USER_POST",
         payload: {
@@ -207,7 +217,7 @@ export default function PostContextProvider({ children }) {
           totalPosts: resData.totalPosts,
         },
       });
-      return true;
+      return { posts: resData.posts, totalPosts: resData.totalPosts };
     } catch (err) {
       postContextDispatch({
         type: "FAIL_FETCH_USER_POST",
@@ -217,9 +227,9 @@ export default function PostContextProvider({ children }) {
   }, []);
 
   async function updatingPost(postId, postData) {
-    postContextDispatch({
-      type: "STARTING_LOADING",
-    });
+    // postContextDispatch({
+    //   type: "STARTING_LOADING",
+    // });
     try {
       const resData = await updatePost(postId, { ...postData });
       postContextDispatch({
@@ -242,6 +252,7 @@ export default function PostContextProvider({ children }) {
         },
       });
       const resData = await deletePost(postId);
+      await fetchingUserPosts();
       return true;
     } catch (err) {
       postContextDispatch({
@@ -249,6 +260,11 @@ export default function PostContextProvider({ children }) {
       });
       return false;
     }
+  }
+  function resetState() {
+    postContextDispatch({
+      type: "RESET_STATE",
+    });
   }
 
   //ctxValue
@@ -260,6 +276,7 @@ export default function PostContextProvider({ children }) {
     fetchingUserPosts,
     updatingPost,
     deletingPost,
+    resetState,
   };
   return (
     <PostContext.Provider value={ctxValue}>{children}</PostContext.Provider>

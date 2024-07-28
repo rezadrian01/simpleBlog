@@ -14,7 +14,7 @@ export async function fetchPost(postId) {
   if (!response.ok) {
     throw new Error("Failed to fetch post");
   }
-  return resData.post;
+  return resData;
 }
 export async function getUserPost() {
   const token = localStorage.getItem("token");
@@ -84,7 +84,7 @@ export async function deletePost(postId) {
 
 //auth
 export async function login(userData) {
-  const response = await fetch(`${host}/auth/logins`, {
+  const response = await fetch(`${host}/auth/login`, {
     method: "POST",
     body: JSON.stringify({ ...userData }),
     headers: {

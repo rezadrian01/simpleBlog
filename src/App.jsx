@@ -19,7 +19,7 @@ function App() {
   // });
   const { menuContextState } = useContext(MenuContext);
   const { userContextState } = useContext(UserContext);
-  console.log(userContextState);
+  // console.log(userContextState);
   const { selectedMenu } = menuContextState;
   // console.log(selectedMenu);
   function MainContent() {

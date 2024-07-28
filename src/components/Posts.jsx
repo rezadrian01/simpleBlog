@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from "react";
-import { fetchPosts } from "../http";
 import PostCard from "./PostCard";
 import { PostContext } from "../store/Post-Context";
 import Loading from "./Loading";
@@ -8,7 +7,6 @@ import Error from "./Error";
 export default function Posts() {
   const { fetchingPosts, postContextState } = useContext(PostContext);
   const [error, setError] = useState(false);
-  // console.log(error);
   useEffect(() => {
     async function fetchPosts() {
       const result = await fetchingPosts();
@@ -18,24 +16,10 @@ export default function Posts() {
         setError(false);
       }
       return;
-      // if (!result) {
-      //   setError(true);
-      // } else {
-      //   setError(false);
-      // }
-      // return;
     }
     fetchPosts();
   }, [fetchingPosts]);
 
-  // if (error) {
-  //   return (
-  //     <div className="text-center">
-  //       <h3 className="text-xl">An error occured</h3>
-  //       <p>Something went wrong please comeback later.</p>
-  //     </div>
-  //   );
-  // }
   return (
     <>
       {postContextState.hasError && <Error />}

@@ -1,82 +1,75 @@
-import { useState, useEffect } from "react";
-import { fetchPost, updatePost } from "../http";
+import { useState, useEffect, useContext } from "react";
 
-export default function EditPost({ postId, onCancel, onAfterEdit }) {
+import { MenuContext } from "../store/Menu-Context";
+import { PostContext } from "../store/Post-Context";
+
+import Loading from "./Loading";
+
+import Error from "./Error";
+
+export default function EditPost() {
+  const { menuContextState, handleMyPostMenu } = useContext(MenuContext);
+  const { fetchingPost, updatingPost } = useContext(PostContext);
+
   const [data, setData] = useState({
     post: {},
-    isFetching: false,
+    isLoading: false,
     error: false,
     titleInput: "",
     contentInput: "",
   });
-  function handleChangeTitle(event) {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        titleInput: event.target.value,
-      };
-    });
+  const [error, setError] = useState(false);
+  function handleChangeInput(identifier, value) {
+    setData((prevData) => ({
+      ...prevData,
+      [identifier]: value,
+    }));
   }
-  function handleChangeContent(event) {
-    setData((prevData) => {
-      return {
-        ...prevData,
-        contentInput: event.target.value,
-      };
-    });
-  }
+  const { selectedPostId } = menuContextState;
+
   async function handleSubmitEdit() {
-    try {
-      const title = data.titleInput;
-      const content = data.contentInput;
-      const resData = await updatePost(postId, { title, content });
-      console.log(resData);
-      //back to mypost
-      onAfterEdit();
-    } catch (err) {
-      console.log(err);
+    if (!data.isLoading) {
+      setData((prevData) => ({ ...prevData, isLoading: true }));
     }
+    const result = await updatingPost(selectedPostId, {
+      title: data.titleInput,
+      content: data.contentInput,
+    });
+    if (!result) {
+      setError(true);
+      setData((prevData) => ({ ...prevData, isLoading: false }));
+      return;
+    }
+    handleMyPostMenu(localStorage.getItem("token"));
   }
+
   useEffect(() => {
-    async function fetchingPost() {
-      setData((prevData) => {
-        return {
-          ...prevData,
-          isFetching: true,
-        };
-      });
-      try {
-        const post = await fetchPost(postId);
-        // console.log({ ...post });
-        setData((prevData) => {
-          return {
-            ...prevData,
-            post,
-            titleInput: post.title,
-            contentInput: post.content,
-          };
-        });
-      } catch (err) {
-        setData((prevData) => {
-          return {
-            ...prevData,
-            error: true,
-          };
-        });
+    async function fetchCurrentPost() {
+      if (!data.isLoading) {
+        setData((prevData) => ({ ...prevData, isLoading: true }));
       }
-      setData((prevData) => {
-        return {
-          ...prevData,
-          isFetching: false,
-        };
-      });
+      const result = await fetchingPost(selectedPostId);
+      if (!result) {
+        setError(true);
+        setData((prevData) => ({ ...prevData, isLoading: false }));
+        return;
+      }
+      setData((prevData) => ({
+        ...prevData,
+        isLoading: false,
+        post: { ...result.post },
+        titleInput: result.post.title,
+        contentInput: result.post.content,
+      }));
     }
-    fetchingPost();
-  }, []);
+    fetchCurrentPost();
+  }, [fetchingPost, menuContextState.selectedPostId]);
+
   return (
     <section className="w-5/6 sm:w-3/4 md:w-1/2 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-4">
-      {data.error && <p>{data.post.error}</p>}
-      {data.post && (
+      {error && <Error />}
+      {data.isLoading && <Loading />}
+      {!data.isLoading && data.post && (
         <>
           <div>
             <h3 className="text-2xl font-semibold mb-2">Edit Post</h3>
@@ -86,7 +79,9 @@ export default function EditPost({ postId, onCancel, onAfterEdit }) {
               Title
             </label>
             <input
-              onChange={handleChangeTitle}
+              onChange={({ target }) =>
+                handleChangeInput("titleInput", target.value)
+              }
               value={data.titleInput}
               id="title"
               className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full"
@@ -98,7 +93,9 @@ export default function EditPost({ postId, onCancel, onAfterEdit }) {
               Content
             </label>
             <textarea
-              onChange={handleChangeContent}
+              onChange={({ target }) =>
+                handleChangeInput("contentInput", target.value)
+              }
               value={data.contentInput}
               id="content"
               className="bg-slate-700 focus:outline-none px-3 py-1 rounded w-full"
@@ -112,7 +109,7 @@ export default function EditPost({ postId, onCancel, onAfterEdit }) {
             >
               Update
             </button>
-            <button onClick={onCancel}>Cancel</button>
+            <button onClick={handleMyPostMenu}>Cancel</button>
           </div>
         </>
       )}

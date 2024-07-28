@@ -48,7 +48,6 @@ export default function NewPost() {
       title: data.title,
       content: data.content,
     });
-    console.log(result);
     if (!result) {
       setError(true);
       return;
