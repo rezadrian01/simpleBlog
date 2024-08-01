@@ -36,10 +36,13 @@ export default function MyPost() {
   useEffect(() => {
     const fetchData = async () => {
       const resData = await dispatch(getUserPosts());
-      setData((prevState) => ({
-        posts: resData.posts,
-        totalPosts: resData.totalPosts,
-      }));
+      if (resData) {
+        setData((prevState) => ({
+          ...prevState,
+          posts: resData.posts,
+          totalPosts: resData.totalPosts,
+        }));
+      }
     };
     fetchData();
   }, [dispatch]);

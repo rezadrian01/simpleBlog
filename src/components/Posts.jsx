@@ -1,39 +1,53 @@
 import { useEffect, useState, useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { uiActions } from "../store/ui-slice";
+import { fetchPosts } from "../store/post-slice";
+
 import PostCard from "./PostCard";
-import { PostContext } from "../store/Post-Context";
+
 import Loading from "./Loading";
 import Error from "./Error";
 
+import { PostContext } from "../store/Post-Context";
+
 export default function Posts() {
-  const { fetchingPosts, postContextState } = useContext(PostContext);
+  const dispatch = useDispatch();
+  const { hasError, isLoading } = useSelector((state) => state.ui);
+  const [data, setData] = useState({
+    posts: [],
+    totalPosts: 0,
+  });
+  // const { fetchingPosts, postContextState } = useContext(PostContext);
   const [error, setError] = useState(false);
   useEffect(() => {
-    async function fetchPosts() {
-      const result = await fetchingPosts();
-      if (!postContextState.isLoading && postContextState.hasError) {
-        setError(true);
-      } else {
-        setError(false);
+    const fetch = async () => {
+      const resData = await dispatch(fetchPosts());
+      if (resData) {
+        setData((prevData) => ({
+          ...prevData,
+          posts: resData.posts,
+          totalPosts: resData.totalPosts,
+        }));
       }
-      return;
-    }
-    fetchPosts();
-  }, [fetchingPosts]);
+    };
+    fetch();
+  }, []);
 
   return (
     <>
-      {postContextState.hasError && <Error />}
-      {postContextState.isLoading && <Loading />}
-      {!postContextState.isLoading && (
+      {hasError && <Error />}
+      {isLoading && <Loading />}
+      {!isLoading && !hasError && (
         <ol className="flex flex-col gap-4">
-          {postContextState.posts.map((post) => {
+          {data.posts.map((post) => {
             return <PostCard key={post._id} post={post} />;
           })}
         </ol>
       )}
-      {!postContextState.isLoading && !postContextState.hasError && (
+      {!isLoading && !hasError && (
         <p className="text-center font-thin mt-8 text-slate-500">
-          Total Posts: {postContextState.totalPosts}
+          Total Posts: {data.totalPosts}
         </p>
       )}
     </>
