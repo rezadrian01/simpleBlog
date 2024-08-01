@@ -30,7 +30,7 @@ export default function Nav() {
     <nav className="bg-slate-700 px-4 py-6 rounded mb-20">
       <ul className="flex justify-between">
         <li>
-          <button onClick={handleResetMenu}>Blog Now</button>
+          <button onClick={handleResetMenu}>Blog Zone</button>
         </li>
         <li className="flex gap-8">
           <button
