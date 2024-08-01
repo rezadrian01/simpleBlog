@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { useSelector } from "react-redux";
 
 import { MenuContext } from "./store/Menu-Context";
 import { UserContext } from "./store/User-Context";
@@ -17,10 +18,11 @@ function App() {
   //   selectedPostId: null,
   //   isLoggedIn: false,
   // });
+  const selectedMenu = useSelector((state) => state.ui.selectedMenu);
   const { menuContextState } = useContext(MenuContext);
   const { userContextState } = useContext(UserContext);
   // console.log(userContextState);
-  const { selectedMenu } = menuContextState;
+  // const { selectedMenu } = menuContextState;
   // console.log(selectedMenu);
   function MainContent() {
     //content

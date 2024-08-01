@@ -17,7 +17,7 @@ const uiSlice = createSlice({
       state.selectedMenu = "newPost";
     },
     myPostMenu(state, action) {
-      if (!action.payload.isLoggedIn) {
+      if (!action.payload?.isLoggedIn) {
         state.selectedMenu = "signin";
         return;
       }
