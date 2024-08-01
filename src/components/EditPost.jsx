@@ -1,74 +1,67 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { MenuContext } from "../store/Menu-Context";
-import { PostContext } from "../store/Post-Context";
+import { uiActions } from "../store/ui-slice";
+import { fetchPost, updatePost } from "../store/post-slice";
 
 import Loading from "./Loading";
 
 import Error from "./Error";
 
 export default function EditPost() {
-  const { menuContextState, handleMyPostMenu } = useContext(MenuContext);
-  const { fetchingPost, updatingPost } = useContext(PostContext);
+  const dispatch = useDispatch();
+  const { isLoading, selectedPostId } = useSelector((state) => state.ui);
+  const [error, setError] = useState(false);
 
   const [data, setData] = useState({
     post: {},
-    isLoading: false,
-    error: false,
     titleInput: "",
     contentInput: "",
   });
-  const [error, setError] = useState(false);
   function handleChangeInput(identifier, value) {
     setData((prevData) => ({
       ...prevData,
       [identifier]: value,
     }));
   }
-  const { selectedPostId } = menuContextState;
 
   async function handleSubmitEdit() {
-    if (!data.isLoading) {
-      setData((prevData) => ({ ...prevData, isLoading: true }));
-    }
-    const result = await updatingPost(selectedPostId, {
-      title: data.titleInput,
-      content: data.contentInput,
-    });
-    if (!result) {
-      setError(true);
-      setData((prevData) => ({ ...prevData, isLoading: false }));
-      return;
-    }
-    handleMyPostMenu(localStorage.getItem("token"));
+    const sendData = async () => {
+      const resData = await dispatch(
+        updatePost(selectedPostId, {
+          title: data.titleInput,
+          content: data.contentInput,
+        })
+      );
+      if (!resData) {
+        setError(true);
+        return;
+      }
+      dispatch(uiActions.backToMyPostMenu());
+    };
+    sendData();
   }
 
   useEffect(() => {
-    async function fetchCurrentPost() {
-      if (!data.isLoading) {
-        setData((prevData) => ({ ...prevData, isLoading: true }));
-      }
-      const result = await fetchingPost(selectedPostId);
-      if (!result) {
-        setError(true);
-        setData((prevData) => ({ ...prevData, isLoading: false }));
+    const fetch = async () => {
+      const resData = await dispatch(fetchPost(selectedPostId));
+      if (!resData) {
+        dispatch(uiActions.backToMyPostMenu());
         return;
       }
-      setData((prevData) => ({
-        ...prevData,
-        isLoading: false,
-        post: { ...result.post },
-        titleInput: result.post.title,
-        contentInput: result.post.content,
+      setData((prevState) => ({
+        ...prevState,
+        titleInput: resData.post.title,
+        contentInput: resData.post.content,
       }));
-    }
-    fetchCurrentPost();
-  }, [fetchingPost, menuContextState.selectedPostId]);
+    };
+    fetch();
+  }, [dispatch, selectedPostId]);
 
   return (
     <section className="w-5/6 sm:w-3/4 md:w-1/2 bg-slate-900 p-4 rounded-lg shadow-lg mx-auto flex flex-col gap-4">
       {error && <Error />}
-      {data.isLoading && <Loading />}
+      {isLoading && <Loading />}
       {!data.isLoading && data.post && (
         <>
           <div>
@@ -109,7 +102,9 @@ export default function EditPost() {
             >
               Update
             </button>
-            <button onClick={handleMyPostMenu}>Cancel</button>
+            <button onClick={() => dispatch(uiActions.backToMyPostMenu())}>
+              Cancel
+            </button>
           </div>
         </>
       )}

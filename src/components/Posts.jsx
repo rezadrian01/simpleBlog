@@ -1,15 +1,12 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { uiActions } from "../store/ui-slice";
 import { fetchPosts } from "../store/post-slice";
 
 import PostCard from "./PostCard";
 
 import Loading from "./Loading";
 import Error from "./Error";
-
-import { PostContext } from "../store/Post-Context";
 
 export default function Posts() {
   const dispatch = useDispatch();
@@ -18,8 +15,6 @@ export default function Posts() {
     posts: [],
     totalPosts: 0,
   });
-  // const { fetchingPosts, postContextState } = useContext(PostContext);
-  const [error, setError] = useState(false);
   useEffect(() => {
     const fetch = async () => {
       const resData = await dispatch(fetchPosts());

@@ -28,7 +28,7 @@ export const fetchPosts = () => {
   };
 };
 
-export const fetchPost = () => {
+export const fetchPost = (postId) => {
   return async (dispatch) => {
     const sendRequest = async () => {
       const response = await fetch(`${host}/feed/post/${postId}`);

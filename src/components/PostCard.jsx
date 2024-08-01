@@ -1,15 +1,9 @@
-import { useContext, useEffect } from "react";
+import { useDispatch } from "react-redux";
 
-import { MenuContext } from "../store/Menu-Context";
-import { PostContext } from "../store/Post-Context";
+import { uiActions } from "../store/ui-slice";
 
 export default function PostCard({ post, isMyPost, onDelete }) {
-  const { handleEditPostMenu } = useContext(MenuContext);
-  // const { fetchingPost } = useContext(PostContext);
-
-  function handleEdit(postId) {
-    handleEditPostMenu(postId);
-  }
+  const dispatch = useDispatch();
 
   const date = new Date(post.createdAt);
   const formatedDate = date.toLocaleDateString("id-ID", {
@@ -32,7 +26,9 @@ export default function PostCard({ post, isMyPost, onDelete }) {
           <p>LIKE, COMENT</p>
           {isMyPost && (
             <div className="flex gap-4">
-              <button onClick={() => handleEditPostMenu(post._id.toString())}>
+              <button
+                onClick={() => dispatch(uiActions.editPostMenu(post._id))}
+              >
                 Edit
               </button>
               <button onClick={() => onDelete(post._id.toString())}>
