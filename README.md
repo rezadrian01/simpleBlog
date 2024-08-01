@@ -4,8 +4,7 @@ A simple blog application built using the MERN stack (MongoDB, Express, React, N
 
 ## Features
 
-- **Create Posts:** Users can create posts consisting of text content.
-- **Comment on Posts:** Users can comment on posts.
+- **Create, Update, and Delete post:** Users can create posts consisting of text content.
 - **User Registration and Login:** Users can register and login to the application.
 - **User Search:** Search for other users in the application. (Upcoming)
 - **User Profile:** View and edit user profiles. (Upcoming)
