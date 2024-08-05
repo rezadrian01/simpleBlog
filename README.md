@@ -8,6 +8,5 @@ A simple blog application built using the MERN stack (MongoDB, Express, React, N
 - **User Registration and Login:** Users can register and login to the application.
 - **User Search:** Search for other users in the application. (Upcoming)
 - **User Profile:** View and edit user profiles. (Upcoming)
-- **Context API Migration:** Manage state using React's Context API. (Upcoming)
 - **Like and Comments:** Users can like and comments on post. (Upcoming)
 - **Select Post:** Users can select specific posts. (Upcoming)
